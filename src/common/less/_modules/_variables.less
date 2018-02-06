@@ -1,0 +1,86 @@
+//
+// Variables
+// --------------------------------------------------
+
+/*颜色*/
+
+//灰色
+@gray-darker: lighten(#000, 13.5%); // #222
+@gray-dark: lighten(#000, 20%);     // #333
+@gray: lighten(#000, 33.5%);        // #555
+@gray-light: lighten(#000, 46.7%);  // #777
+@gray-lighter:#fafafa;              // #f7f7f7
+
+//主题色
+@brand-primary: #428bca;    //默认蓝色  
+@brand-success: #5cb85c;    //安全绿 
+@brand-info: #5bc0de;       //天蓝
+@brand-warning: #f0ad4e;    //警告黄
+@brand-danger: #d9534f;     //危险红
+
+//页面风格颜色
+@theme-yellow: #FFCD32;        //主色
+@theme-green: #2F8C92;         //辅色
+@theme-orange: #EB6419;        //橙色
+
+//背景色
+@body-bg-white: #fff;        //白色背景
+@body-bg-gray:#f8f8f8;       //灰色背景
+@body-bg-grayer:#f2f2f2;     //灰色背景
+@body-bg-black:#14191f;      //黑色背景
+@body-bg-blacker:#f4f4f4;    //黑色背景
+@body-bg-yellow:#f18c29;     //黄色背景
+
+//字体颜色
+@text-color:#000000;         //标题
+@text-color-light:#474949;   //正文 
+@text-color-lighter:#979797; //版权小字
+@text-color-gray:#474949;    //灰色
+@text-color-grayer:#ababab;  //灰色
+@text-color-yellow:#f18c29;  //黄色
+@text-color-white:#ffffff;   //白色
+
+//线条颜色
+@hr-border: #e7e7e7;
+@hr-border-yellow:#e9972e;
+@hr-border-drak:#0a0a0a;
+@hr-border-light:#848484;
+@hr-border-lighte:#c8c8c8;
+@hr-border-lighter:#eeeeee;
+@hr-border-gray:#e2e2e2;
+
+
+/*字体样式*/
+
+//中文字体
+@font-family-sans-serif: "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+
+//英文字体
+@font-family-serif: Georgia, "Times New Roman", Times, serif;  
+
+//用在<code><kbd><pre>标签中样式
+@font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace;
+
+//默认字体
+@font-family-base: @font-family-sans-serif;    
+
+
+/*字体大小*/
+
+//内容文字
+@font-size-small-s: 10px;    //特小号
+@font-size-small: 12px;      //小号
+@font-size-medium: 14px;     //中号
+@font-size-medium-x: 16px;   //中号偏大
+@font-size-large: 18px;      //大号
+@font-size-large-x: 22px;    //特大号
+
+@font-size-base: 14px;       //基础大小
+
+//标题文字
+@font-size-h1: floor((@font-size-base * 2.6)); // ~34px
+@font-size-h2: floor((@font-size-base * 2.15)); // ~30px
+@font-size-h3: ceil((@font-size-base * 1.7)); // ~24px
+@font-size-h4: ceil((@font-size-base * 1.25)); // ~18px
+@font-size-h5: @font-size-base;
+@font-size-h6: ceil((@font-size-base * 0.85)); // ~12px
