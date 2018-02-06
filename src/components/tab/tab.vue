@@ -17,11 +17,7 @@
 
 <script>
 export default {
-  name: "tab",
-  data() {
-    return {
-    };
-  }
+  name: "tab"
 };
 </script>
 
@@ -31,10 +27,10 @@ export default {
   .tab{
     .clearfix();
     .tab-item{
-      width: 25%;text-align: center;font-size: @font-size-medium-x;font-weight: bold;float: left;height: 44px;
-      .tab-link{color: #424242;padding: 0 5px 5px 5px;line-height: 42px;}
+      width: 25%;text-align: center;font-size: @font-size-medium-x;font-weight: bold;float: left;height: 44px;line-height: 44px;
+      .tab-link{color: #424242;padding:0 5px 5px 5px;}
       &.router-link-active{
-        .tab-link{color:@text-color-yellow;border-bottom: 1px solid @text-color-yellow}
+        .tab-link{color:@text-color-yellow;border-bottom: 2px solid @text-color-yellow}
       }
     }
   }

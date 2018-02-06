@@ -31,3 +31,8 @@ function param(data) {
   //如果url有数据，则需要把拼接的代码的第一位的连接符号&去掉。如果没有url数据则返回空字符串
   return url ? url.substring(1) : ''
 }
+
+//插件jsonp，参数1请求地址，参数2回调函数name，参数3回调
+/* originJSONP(url, { param: "jsonpCallback" }, function(err, data) {
+  console.log(data);
+}); */
