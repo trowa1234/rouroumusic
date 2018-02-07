@@ -67,10 +67,22 @@ export default {
                 this._play();
             }
         }); */
+
+        //监听窗口尺寸改变事件
+        window.addEventListener('resize', () => {
+            //如果插件还没有初始化就什么都不做
+            if(!this.slider){
+                return
+            }
+            //重新计算宽度,但是这里计算宽度就不需要再添加2倍宽了
+            //所以这里调用此方法是需要传1个参数过去，让此方法知道改变窗口大小计算宽度调用了此方法
+            this._setSliderWidth(true)  //传1个true过去
+            this.slider.refresh() //计算宽度后刷新
+        })
     },
     methods: {
         //设置轮播图宽度，因为宽度根据设备大小是不一定
-        _setSliderWidth() {
+        _setSliderWidth(isResize) {//这里的参数是一个标志位，可以判断是哪里调用了此方法
             //获取轮播图父级元素，通过它得到下面所有的子元素，即所有的轮播图
             //$refs和html结构中的ref绑定就可以获取这个dom，这是vue绑定dom的方式
             this.children = this.$refs.sliderGroup.children;
@@ -89,7 +101,8 @@ export default {
                 width += sliderWidth; //轮播图的总宽度，把每个子元素的宽度加起来
             }
 
-            if (this.loop) {
+            //就在这里判断需不需要加2倍宽度
+            if (this.loop && !isResize) {
                 //当loop属性(循环比方开启)为true，总宽度还需要增加2个子元素的宽度
                 //在轮播图的首尾个增加1个轮播图
                 width += 2 * sliderWidth;
@@ -113,9 +126,9 @@ export default {
             //绑定滚动结束事件，每次滚动结束后触发
             this.slider.on("scrollEnd", () => {
                 //使用插件提供的方法获取当前所在项的索引值
-                console.log(this.slider.getCurrentPage());
+                //console.log(this.slider.getCurrentPage());
                 let pageIndex = this.slider.getCurrentPage().pageX; //当前索引值
-
+                
                 //设置索引值为轮播图当前索引值
                 this.currentPageIndex = pageIndex;
 
@@ -139,17 +152,11 @@ export default {
 
         //自动播放
         _play() {
-            //设置当前索引增加1
-            let pageIndex = this.currentPageIndex + 1;
-            //当索引等于轮播图的长度时，将索引设为0，重新开始
-            if (pageIndex === this.dots.length) {
-                pageIndex = 0;
-            }
             //使用setTimeout延迟，用props传入的interval作为延迟的事件
             this.timer = setTimeout(() => {
-                //使用插件提供的方法goToPage()跳转到索引对应的页面
-                //第1个参数x横轴的页数，第2个参数y横轴的页数，第3个参数滚动动画的时间
-                this.slider.goToPage(pageIndex, 0, 400);
+                clearTimeout(this.timer);
+                //使用插件提供的方法next()跳转下一页
+                this.slider.next();
             }, this.interval);
         }
     }
@@ -177,10 +184,10 @@ export default {
     }
     .dots {
         position: absolute;
-        left: 50%;
+        left:0;
         bottom: 10%;
-        margin-left: -50px;
         text-align: center;
+        width: 100%;
         .dot {
             display: inline-block;
             width: 8px;
