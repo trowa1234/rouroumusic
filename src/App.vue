@@ -2,7 +2,10 @@
   <div id="app">
     <m-head></m-head>
     <tab></tab>
-    <router-view/>
+    <!-- 使用<keep-alive>标签缓存显示内容 -->
+    <keep-alive>
+        <router-view/>
+    </keep-alive>
   </div>
 </template>
 

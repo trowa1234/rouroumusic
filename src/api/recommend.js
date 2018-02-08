@@ -2,6 +2,8 @@
 import jsonp from '@/common/js/jsonp'
 //引入config配置文件中的参数，这里使用花括号是因为这两个参数用的export暴露出来  
 import { commonParams, options } from './config'
+//引入axios
+import axios from 'axios'
 
 //推荐页面-轮播图的数据抓取
 export function getRecommend() {
@@ -22,3 +24,32 @@ export function getRecommend() {
     //使用我们封装的jsonp方法。在此方法中完成处理data，拼接url，调用插件jsonp返回数据
     return jsonp(url, data, options);
 }
+
+
+//推荐页面-歌单的数据抓取
+export function getDiscList() {
+    //请求地址是我们模拟的地址
+    const url = '/api/getDiscList'
+
+    const data = Object.assign({}, commonParams, {
+        //这些参数都是请求时需要的，请求轮播图有所不同
+        platform: 'yqq',
+        hostUin:0,
+        sin: 0,
+        ein:29,
+        sortId:5,
+        needNewCode: 0,
+        categoryId:10000000,
+        rnd:Math.random(),
+        format:'json'
+    })
+
+    //使用插件axios发送ajax，get请求
+    return axios.get(url,{
+        params:data
+    }).then((res) => {
+        return Promise.resolve(res.data)    //返回的Promise.resolve
+    })
+}
+
+

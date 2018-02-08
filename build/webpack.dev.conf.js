@@ -9,6 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const axios = require('axios')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -22,6 +23,27 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+      //由于新版vue-cli取消了dev-server文件，所以后端代理写在了这里
+      before(app){
+          //模拟请求地址
+          app.get('/api/getDiscList', function(req,res){
+              const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
+            
+              //使用axios向qq音乐发送http请求
+              axios.get(url,{
+                  headers:{//模拟了请求头信息，让qq音乐以为是自己网站发送的请求
+                      referer:'https://c.y.qq.com',
+                      host:'c.y.qq.com'
+                  },
+                  params:req.query  //其他请求参数，用ajax请求发送过来
+              }).then((response) => {   //这里的response是qq返回的数据
+                  res.json(response.data)//这里的数据是返回给ajax请求的
+              }).catch((e) => {//如果有错误就报错误信息
+                  console.log(e)
+              })
+          })
+      },
+
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [

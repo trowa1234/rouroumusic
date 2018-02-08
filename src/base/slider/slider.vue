@@ -39,34 +39,35 @@ export default {
         interval: {
             //切换时间间隔(毫秒)
             type: Number,
-            default: 3000
+            default: 4000
         }
     },
 
     //在生命周期mounted（HTML挂载完成）时初始化宽度和slider
     //mounted生命周期是在created之后，slot插槽中还没有加载。所以在父组件recommend组件中我们用了v-if先等轮播数据加载完毕后，再渲染slider组件
     mounted() {
-        //设置延迟20毫秒延迟是为了等待dom加载完毕。
+
+        // //推荐用$nextTick()这个方法等待dom加载。将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。
+        // this.$nextTick(() => {
+        //     this._setSliderWidth();//设置轮播图宽度
+        //     this._initDots(); //获取圆点个数，只能放在初始化插件前面。否则会收到初始化loop参数的影响，为true时会多2个子元素
+        //     this._initSlider(); //初始化插件
+        //     //如果自动播放是开启的，进入页面就执行一次play方法
+        //     if (this.autoPlay) {
+        //         this._play();
+        //     }
+        // });
+
+        //也可以用设置延迟20毫秒延迟的方法，等待dom加载完毕。加载页面时会出现图片闪动不推荐
         setTimeout(() => {
-            this._setSliderWidth(); //设置轮播图宽度
-            this._initDots(); //获取圆点个数，只能放在初始化插件前面。否则会收到初始化loop参数的影响，为true时会多2个子元素
-            this._initSlider(); //初始化插件
-
-            //如果自动播放是开启的，进入页面就执行一次play方法
-            if (this.autoPlay) {
-                this._play();
-            }
-        }, 20);
-
-        /*  //也可以用$nextTick()这个方法等待dom加载。将回调延迟到下次 DOM 更新循环之后执行。在修改数据之后立即使用它，然后等待 DOM 更新。
-        this.$nextTick(() => {
-            this._setSliderWidth();
+            this._setSliderWidth(); 
             this._initDots(); 
             this._initSlider(); 
             if (this.autoPlay) {
                 this._play();
             }
-        }); */
+        }, 20);
+
 
         //监听窗口尺寸改变事件
         window.addEventListener('resize', () => {
@@ -85,6 +86,8 @@ export default {
         _setSliderWidth(isResize) {//这里的参数是一个标志位，可以判断是哪里调用了此方法
             //获取轮播图父级元素，通过它得到下面所有的子元素，即所有的轮播图
             //$refs和html结构中的ref绑定就可以获取这个dom，这是vue绑定dom的方式
+
+            
             this.children = this.$refs.sliderGroup.children;
 
             let width = 0; //定义1个宽度
@@ -159,6 +162,11 @@ export default {
                 this.slider.next();
             }, this.interval);
         }
+    },
+
+    //生命周期destroyed（页面销毁）时钩子函数，清除计时器
+    destroyed(){
+        clearTimeout(this.timer)
     }
 };
 </script>
@@ -166,10 +174,12 @@ export default {
 <style scoped lang="less">
 @import "../../common/less/main.less";
 .slider {
+    min-height:1;
     position: relative;
     .slider-group {
         overflow: hidden;
         white-space: nowrap;
+        .clearfix();
         .slider-item {
             float: left;
             a {
