@@ -23,7 +23,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
-      //由于新版vue-cli取消了dev-server文件，所以后端代理写在了这里
+      //由于新版vue-cli取消了dev-server文件，所以后端代理写在了这里。
       before(app){
           //模拟请求地址
           app.get('/api/getDiscList', function(req,res){

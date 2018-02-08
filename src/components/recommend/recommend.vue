@@ -1,6 +1,7 @@
 <template>
     <div class="recommend">
-        <scroll class="recommend-content" :data="discList">
+        <!-- 把歌单列表数据传入scroll组件中，以便计算滚动距离。绑定了scroll的dom元素，可以使用scroll中定义的方法 -->
+        <scroll ref="scroll" class="recommend-content" :data="discList">
             <div>
                 <!-- v-if，注意这里一定要得到数据后再开始后面的循环渲染，否则slider组件中无法计算宽度 -->
                 <div v-if="recommendSlider.length" class="slider-wrapper">
@@ -8,7 +9,8 @@
                         <!-- 这里就是填充slider组件中slot标签的内容。这里可以不绑定key -->
                         <div v-for="(item,index) in recommendSlider" v-bind:key="index">
                             <a :href="item.linkUrl">
-                                <img :src="item.picUrl" />
+                                <!-- 给轮播图绑定load事件。轮播图区域是开图片撑开高度的，所以在图片上绑定一个事件，用来监控图片是否加载完成，如果加载完成就重新计算滚动距离 -->
+                                <img @load="loadImage" :src="item.picUrl" />
                             </a>
                         </div>
                     </slider>
@@ -18,7 +20,8 @@
                     <ul>
                         <li v-for="(item,index) in discList" class="item" :key="index">
                             <div class="pic">
-                                <img :src="item.imgurl" alt="">
+                                <!-- 原来用的是:src，懒加载用v-lazy -->
+                                <img v-lazy="item.imgurl" />
                             </div>
                             <div class="text">
                                 <h3 class="creator" v-html="item.creator.name"></h3>
@@ -29,6 +32,10 @@
                 </div>
             </div>
         </scroll>
+        <!-- loading组件需要一个外层来进行遮罩和使用v-show来控制显示的时机，当歌单数据加载出来后就隐藏 -->
+        <div class="loading-content" v-show="!discList.length">
+            <loading></loading>
+        </div>
     </div>
 </template>
 
@@ -38,7 +45,8 @@ import { getRecommend, getDiscList } from "@/api/recommend"; //引入获取推�
 import { ERR_OK } from "@/api/config"; //引入返回成功code
 
 import Slider from "@/base/slider/slider"; //引入轮播组件
-import Scroll from "@/base/scroll/scroll"; //引入轮播组件
+import Scroll from "@/base/scroll/scroll"; //引入滚动组件
+import Loading from "@/base/loading/loading"; //引入加载组件
 
 export default {
     name: "recommend",
@@ -74,11 +82,22 @@ export default {
                     //console.log(this.discList);
                 }
             });
+        },
+        //图片加载事件
+        loadImage() {
+            //轮播图有多张图片，此事件会触发多次，所以设置1个标志this.oneLoaded。
+            if (!this.oneLoaded) {
+                //当触发1次时就会调用scroll内部的方法计算滚动距离
+                this.$refs.scroll.refresh();
+                //然后把这个标志设置为true，那么下次再触发图片加载事件时if语句就不回再进来了
+                this.oneLoaded = true;
+            }
         }
     },
     components: {
         Slider,
-        Scroll
+        Scroll,
+        Loading
     }
 };
 </script>
@@ -88,38 +107,52 @@ export default {
 .recommend {
     position: fixed;
     top: 88px;
+    bottom: 0;
     width: 100%;
-    height: 100%;
-    .recommend-list {
-        .hot-tit {
-            font-size: @font-size-medium-x;
-            font-weight: bold;
-            text-align: center;
-            line-height: 40px;
-            color: @text-color-yellow;
-        }
-        .item {
-            display: flex;
-            padding: 10px;
-            .pic {
-                flex: 0 0 60px;
-                margin-right: 20px;
-                img {
-                    width: 60px;
-                    height: 60px;
+    .recommend-content {
+        //此样式是scroll组件的必须有这两个样式才能达到滚动效果。可以在scroll组件里面设置好，外面就可以不用加了
+        // height: 100%;
+        // overflow: hidden;
+        .recommend-list {
+            .hot-tit {
+                font-size: @font-size-medium-x;
+                font-weight: bold;
+                text-align: center;
+                line-height: 40px;
+                color: @text-color-yellow;
+            }
+            .item {
+                display: flex;
+                padding: 10px;
+                .pic {
+                    flex: 0 0 60px;
+                    margin-right: 20px;
+                    img {
+                        width: 60px;
+                        height: 60px;
+                    }
+                }
+                .text {
+                    .creator {
+                        font-size: @font-size-medium-x;
+                        line-height: 20px;
+                    }
+                    .discname {
+                        font-size: @font-size-medium;
+                        color: @text-color-lighter;
+                        margin-top: 8px;
+                    }
                 }
             }
-            .text {
-                .creator {
-                    font-size: @font-size-medium;
-                    line-height: 20px;
-                }
-                .discname {
-                    font-size: @font-size-small;
-                    margin-top: 8px;
-                }
-            }
         }
+    }
+    .loading-content {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(2, 2, 2, 0.4);
     }
 }
 </style>
