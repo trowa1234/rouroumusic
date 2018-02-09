@@ -1,6 +1,6 @@
 <template>
     <div class="singer">
-        singer
+        <listview :data="singerList"></listview>
     </div>
 </template>
 
@@ -8,6 +8,7 @@
 import { getSingerList } from "@/api/singer"; //引入获取歌手列表数据方法
 import { ERR_OK } from "@/api/config";
 import Singer from "@/common/js/singer"; //引入创建歌手的类
+import listview from "@/base/listview/listview"; //引入listview组件
 
 const HOT_NAME = "热门"; //定义热门标签
 const HOT_SINGER_LEN = 10; //定义热门歌手数量
@@ -26,8 +27,9 @@ export default {
         _getSingerList() {
             getSingerList().then(res => {
                 if (res.code === ERR_OK) {
-                    this.singerList = res.data.list;
-                    console.log(this._handleSingerList(this.singerList));
+                    //将处理后的数据赋值给singerList
+                    this.singerList = this._handleSingerList(res.data.list)
+                    console.log(this.singerList);
                 }
             });
         },
@@ -96,6 +98,9 @@ export default {
             //最后用hot数组拼接ret数组，因为hot数组需要在最前面
             return hot.concat(ret);
         }
+    },
+    components:{
+        listview
     }
 };
 </script>
