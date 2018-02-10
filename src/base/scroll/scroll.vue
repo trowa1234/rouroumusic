@@ -46,18 +46,26 @@ export default {
                 click: this.click
             });
         },
-        //一下定义这些方法是为了方便调用
-        //插件提供-启动滚动方法
+        //一下定义这些方法是为了方便内部和外部调用。这些方法都是插件提供的方法
+        //启动滚动方法
         enable() {
             this.scroll && this.scroll.enable();
         },
-        //插件提供-禁用滚动方法
+        //禁用滚动方法
         disable() {
             this.scroll && this.scroll.disable();
         },
-        //插件提供-重新计算dom滚动距离方法
+        //重新计算dom滚动距离方法
         refresh() {
             this.scroll && this.scroll.refresh();
+        },
+        //使列表滚动到指定的参数
+        scrollTo(){
+            this.scroll && this.scroll.scrollTo.apply(this.scroll,arguments)
+        },
+        //使列表滚动到指定的元素
+        scrollToElement(){
+            this.scroll && this.scroll.scrollToElement.apply(this.scroll,arguments)
         }
     },
     watch: {
