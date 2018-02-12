@@ -2,6 +2,7 @@ import 'babel-polyfill' //对ES6的一些api进行转义
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store' //引入vuex入口文件
 import fastclick from 'fastclick' //解决移动端点击有300毫秒的延迟
 import VueLazyLoad from 'vue-lazyload' //懒加载
 
@@ -20,7 +21,8 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router,   //路由
+  store,    //vuex
   components: {
     App
   },

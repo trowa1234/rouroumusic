@@ -11,7 +11,10 @@
                 <h2 class="list-group-title">{{group.title}}</h2>
                 <ul>
                     <!-- 渲染歌手数据:第二层数据，items中的name和avatar -->
-                    <li v-for="(item,index) in group.items" class="list-group-item" :key="index">
+                    <li v-for="(item,index) in group.items" 
+                        class="list-group-item" 
+                        :key="index" 
+                        @click="selectItem(item)"><!-- 给歌手列表中每个歌手项绑定点击事件，并且item作为参数传送 -->
                         <img class="avatar" v-lazy="item.avatar" />
                         <span class="name" v-html="item.name"></span>
                     </li>
@@ -87,6 +90,11 @@ export default {
         }
     },
     methods: {
+        //歌手项点击事件。因为listview是一个基础组件，在这里不需要定义业务逻辑相关的方法，只负责把点击了哪个元素这个事件传递出去
+        selectItem(item){
+            //向外派发自定义事件'select',并且把参数item传递出去。这个item就是歌手信息的实例对象
+            this.$emit('select',item)
+        },
         //快速跳转列表触摸开始事件
         onShortcutTouchStart(e) {
             //获取当前触碰锚点的索引值。data-index属性就是绑定的索引值index
@@ -199,7 +207,7 @@ export default {
                 return;
             }
             this.fixedTop = fixedTop;
-            console.log(this.fixedTop);
+            //console.log(this.fixedTop);
             this.$refs.listfixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`;
         }
     },

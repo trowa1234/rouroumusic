@@ -4,7 +4,7 @@
     <tab></tab>
     <!-- 使用<keep-alive>标签缓存显示内容 -->
     <keep-alive>
-        <router-view/>
+        <router-view></router-view>
     </keep-alive>
   </div>
 </template>
