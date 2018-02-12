@@ -49,110 +49,110 @@ import Scroll from "@/base/scroll/scroll"; //引入滚动组件
 import Loading from "@/base/loading/loading"; //引入加载组件
 
 export default {
-    name: "recommend",
-    data() {
-        //data中的值必须由return返回
-        return {
-            recommendSlider: [], //接收轮播图数据的空数组
-            discList: [] //接歌单数据的空数组
-        };
-    },
-    created() {
-        //在生命周期created（页面被创建时）这个钩子函数中调用
-        this._getRecommend(); //获取轮播数据。在methods中进行了包装，也可直接在此调用getRecommend
-        this._getDiscList();
-    },
-    methods: {
-        _getRecommend() {
-            //轮播数据
-            //getRecommend()返回的其实是Promise对象，所以这里用了.then接收数据
-            getRecommend().then(res => {
-                if (res.code === ERR_OK) {
-                    //console.log(res); //返回的是所有的数据
-                    //console.log(res.data.slider); //轮播数据是一个数组
-                    this.recommendSlider = res.data.slider; //赋值给空数组
-                }
-            });
-        },
-        _getDiscList() {
-            //歌单数据
-            getDiscList().then(res => {
-                if (res.code === ERR_OK) {
-                    this.discList = res.data.list;
-                    //console.log(this.discList);
-                }
-            });
-        },
-        //图片加载事件
-        loadImage() {
-            //轮播图有多张图片，此事件会触发多次，所以设置1个标志this.oneLoaded。
-            if (!this.oneLoaded) {
-                //当触发1次时就会调用scroll内部的方法计算滚动距离
-                this.$refs.scroll.refresh();
-                //然后把这个标志设置为true，那么下次再触发图片加载事件时if语句就不回再进来了
-                this.oneLoaded = true;
-            }
+  name: "recommend",
+  data() {
+    //data中的值必须由return返回
+    return {
+      recommendSlider: [], //接收轮播图数据的空数组
+      discList: [] //接歌单数据的空数组
+    };
+  },
+  created() {
+    //在生命周期created（页面被创建时）这个钩子函数中调用
+    this._getRecommend(); //获取轮播数据。在methods中进行了包装，也可直接在此调用getRecommend
+    this._getDiscList();
+  },
+  methods: {
+    _getRecommend() {
+      //轮播数据
+      //getRecommend()返回的其实是Promise对象，所以这里用了.then接收数据
+      getRecommend().then(res => {
+        if (res.code === ERR_OK) {
+          //console.log(res); //返回的是所有的数据
+          //console.log(res.data.slider); //轮播数据是一个数组
+          this.recommendSlider = res.data.slider; //赋值给空数组
         }
+      });
     },
-    components: {
-        Slider,
-        Scroll,
-        Loading
+    _getDiscList() {
+      //歌单数据
+      getDiscList().then(res => {
+        if (res.code === ERR_OK) {
+          this.discList = res.data.list;
+          //console.log(this.discList);
+        }
+      });
+    },
+    //图片加载事件
+    loadImage() {
+      //轮播图有多张图片，此事件会触发多次，所以设置1个标志this.oneLoaded。
+      if (!this.oneLoaded) {
+        //当触发1次时就会调用scroll内部的方法计算滚动距离
+        this.$refs.scroll.refresh();
+        //然后把这个标志设置为true，那么下次再触发图片加载事件时if语句就不回再进来了
+        this.oneLoaded = true;
+      }
     }
+  },
+  components: {
+    Slider,
+    Scroll,
+    Loading
+  }
 };
 </script>
 
 <style scoped lang="less">
 @import "../../common/less/main.less";
 .recommend {
-    position: fixed;
-    top: 88px;
-    bottom: 0;
-    width: 100%;
-    .recommend-content {
-        //此样式是scroll组件的必须有这两个样式才能达到滚动效果。可以在scroll组件里面设置好，外面就可以不用加了
-        // height: 100%;
-        // overflow: hidden;
-        .recommend-list {
-            .hot-tit {
-                font-size: @font-size-medium-x;
-                font-weight: bold;
-                text-align: center;
-                line-height: 40px;
-                color: @text-color-yellow;
-            }
-            .item {
-                display: flex;
-                padding: 10px;
-                .pic {
-                    flex: 0 0 60px;
-                    margin-right: 20px;
-                    img {
-                        width: 60px;
-                        height: 60px;
-                    }
-                }
-                .text {
-                    .creator {
-                        font-size: @font-size-medium-x;
-                        line-height: 20px;
-                    }
-                    .discname {
-                        font-size: @font-size-medium;
-                        color: @text-color-lighter;
-                        margin-top: 8px;
-                    }
-                }
-            }
+  position: fixed;
+  top: 88px;
+  bottom: 0;
+  width: 100%;
+  .recommend-content {
+    //此样式是scroll组件的必须有这两个样式才能达到滚动效果。可以在scroll组件里面设置好，外面就可以不用加了
+    // height: 100%;
+    // overflow: hidden;
+    .recommend-list {
+      .hot-tit {
+        font-size: @font-size-medium-x;
+        font-weight: bold;
+        text-align: center;
+        line-height: 40px;
+        color: @text-color-yellow;
+      }
+      .item {
+        display: flex;
+        padding: 10px;
+        .pic {
+          flex: 0 0 60px;
+          margin-right: 20px;
+          img {
+            width: 60px;
+            height: 60px;
+          }
         }
+        .text {
+          .creator {
+            font-size: @font-size-medium-x;
+            line-height: 20px;
+          }
+          .discname {
+            font-size: @font-size-medium;
+            color: @text-color-lighter;
+            margin-top: 8px;
+          }
+        }
+      }
     }
-    .loading-content {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(2, 2, 2, 0.4);
-    }
+  }
+  .loading-content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(2, 2, 2, 0.4);
+  }
 }
 </style>

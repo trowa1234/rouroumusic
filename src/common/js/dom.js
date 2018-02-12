@@ -26,12 +26,12 @@ export function hasClass(el, CLASSname) {
 
 
 //设置或获取dom元素属性。传入3个参数：第1个dom元，第2个属性名，第3个属性值（选传）
-export function getData(el,name,val){
-    const prefix = "data-"  //dom元素自定义属性是data-xxx
-    name = prefix + name    //name参数只需要传入data-后面的字符就可以了
-    if(val){//如果传入了val参数，就设置这个属性值
-        return el.setAttribute(name,val)
-    } else{//如果没有传val参数，就获取这个属性值
+export function getData(el, name, val) {
+    const prefix = "data-" //dom元素自定义属性是data-xxx
+    name = prefix + name //name参数只需要传入data-后面的字符就可以了
+    if (val) { //如果传入了val参数，就设置这个属性值
+        return el.setAttribute(name, val)
+    } else { //如果没有传val参数，就获取这个属性值
         return el.getAttribute(name)
     }
 }

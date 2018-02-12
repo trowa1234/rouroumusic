@@ -1,7 +1,7 @@
 <template>
-  <div class="search">
-   search
-  </div>
+    <div class="search">
+        search
+    </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -17,5 +17,4 @@ export default {
 
 <style scoped lang="less">
 @import "../../common/less/main.less";
-
 </style>

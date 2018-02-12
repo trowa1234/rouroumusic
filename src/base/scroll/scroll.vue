@@ -11,20 +11,25 @@ export default {
     name: "scroll",
     //从父组件中获取传递过来的参数由props接收
     props: {
+        //scroll事件派发形式
         probeType: {
-            //scroll事件派发形式
             type: Number,
             default: 1
         },
+        //是否允许点击事件
         click: {
-            //是否允许点击事件
             type: Boolean,
             default: true
         },
-        data: {
-            //滚动的距离是根据数据来计算的，如果数据发送变化，可以监听数据重新计算距离
+        //滚动的距离是根据数据来计算的，如果数据发送变化，可以监听数据重新计算距离
+        data: {  
             type: Array,
             default: []
+        },
+        //是否允许组件监听滚动事件
+        listenScroll: {
+            type: Boolean,
+            default: false
         }
     },
     //当dom加载完毕时初始化插件
@@ -40,11 +45,23 @@ export default {
                 //判断dom是否加载
                 return;
             }
+
             //传入参数，初始化插件
             this.scroll = new BScroll(this.$refs.wrapper, {
                 probeType: this.probeType,
                 click: this.click
             });
+
+            //如果允许监听滚动事件
+            if(this.listenScroll){
+                //在外部保存this，因为在事件中的this指向的是scroll
+                let me = this
+                //监听滚动事件，参数pos就是当代滚动的坐标位置，包括x轴和y轴的坐标值   
+                this.scroll.on('scroll',(pos) => {
+                    //使用$emit把这个事件派发给父组件，父组件绑定'scroll'事件就可以接收
+                    me.$emit('scroll',pos)
+                })
+            }
         },
         //一下定义这些方法是为了方便内部和外部调用。这些方法都是插件提供的方法
         //启动滚动方法
@@ -60,12 +77,13 @@ export default {
             this.scroll && this.scroll.refresh();
         },
         //使列表滚动到指定的参数
-        scrollTo(){
-            this.scroll && this.scroll.scrollTo.apply(this.scroll,arguments)
+        scrollTo() {
+            this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
         },
         //使列表滚动到指定的元素
-        scrollToElement(){
-            this.scroll && this.scroll.scrollToElement.apply(this.scroll,arguments)
+        scrollToElement() {
+            this.scroll &&
+                this.scroll.scrollToElement.apply(this.scroll, arguments);
         }
     },
     watch: {
@@ -83,7 +101,7 @@ export default {
 <style scoped lang="less">
 @import "../../common/less/main.less";
 .wrapper {
-    height: 100%;//这两个属性必须写，否则滚动不了
+    height: 100%; //这两个属性必须写，否则滚动不了
     overflow: hidden;
 }
 </style>
