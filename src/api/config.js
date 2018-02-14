@@ -14,5 +14,15 @@ export const options = {
     param: 'jsonpCallback'
 }
 
+export const singerDetailOptions = {
+    param: 'jsonpCallback',
+
+    //name，自定义回调函数的值。如：jsonpCallback:MusicJsonCallbacksinger_track
+    name: 'MusicJsonCallbacksinger_track'    
+
+    //prefix，这个是自定义名字+自增。如：jsonpCallback:MusicJsonCallbacksinger_track1
+    //prefix: 'MusicJsonCallbacksinger_track'  
+}
+
 //接口的返回值。请求成功的返回值
 export const ERR_OK = 0

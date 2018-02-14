@@ -111,8 +111,8 @@ export default {
   width: 100%;
   .recommend-content {
     //此样式是scroll组件的必须有这两个样式才能达到滚动效果。可以在scroll组件里面设置好，外面就可以不用加了
-    // height: 100%;
-    // overflow: hidden;
+    height: 100%;
+    overflow: hidden;
     .recommend-list {
       .hot-tit {
         font-size: @font-size-medium-x;

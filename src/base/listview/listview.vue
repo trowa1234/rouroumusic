@@ -221,6 +221,8 @@ export default {
 <style scoped lang="less">
 @import "../../common/less/main.less";
 .listview {
+    height: 100%;
+    overflow: hidden;
     font-size: @font-size-medium-x;
     position: relative;
     .list-group {

@@ -28,7 +28,7 @@ export default {
     .clearfix();
     .tab-item{
       width: 25%;text-align: center;font-size: @font-size-medium-x;font-weight: bold;float: left;height: 44px;line-height: 44px;
-      .tab-link{color: #424242;padding:0 5px 5px 5px;}
+      .tab-link{color: #818181;padding:0 5px 5px 5px;}
       &.router-link-active{
         .tab-link{color:@text-color-yellow;border-bottom: 2px solid @text-color-yellow}
       }

@@ -35,3 +35,36 @@ export function getData(el, name, val) {
         return el.getAttribute(name)
     }
 }
+
+//判断浏览器厂商
+let elementStyle = document.createElement('div').style
+let vendor = (() => {
+    let transformNames = {  //浏览器厂商
+        webkit:'webkitTransform',
+        Moz:'MozTransform',
+        O:'OTransform',
+        ms:'msTransform',
+        standard:'transform'
+    }
+
+    for(let key in transformNames){
+        if(elementStyle[transformNames[key]] !== undefined){
+            return key
+        }
+    }
+    return false
+})()
+
+
+//封装js代码中的css兼容代码。带厂商的私有化前缀
+export function prefixStyle(style){//参数为样式名字符串
+    if(vendor === false){
+        return false
+    }
+    if(vendor === 'standard'){
+        return style
+    }
+
+    //拼接：厂商的对应的前缀 + 样式名第一个字母大写 + 样式名后面的字母
+    return vendor + style.charAt(0).toUpperCase() + style.substr(1)
+}

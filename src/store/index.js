@@ -7,7 +7,7 @@ import * as getters from './getters'    //使用了* as，可以通过getters.si
 import state from './state' //引入状态
 import mutations from './mutations'//引入方法
 
-//vuex提供的插件，通过mutation修改state时，会在控制台打印出这条修改记录
+//vuex提供的插件，通过mutation修改state时，会在控制台打印出这条state修改记录
 import createLogger from 'vuex/dist/logger'
 
 

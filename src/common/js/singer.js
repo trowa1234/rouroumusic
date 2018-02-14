@@ -1,4 +1,4 @@
-//封装了一个singer类，只需要传入id和name参数
+//封装了一个singer类（歌手），只需要传入对象id和name
 export default class Singer{
     constructor({id,name}){
         this.id = id    //id就是传入数据中的Fsinge_mid

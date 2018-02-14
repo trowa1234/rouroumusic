@@ -1,0 +1,53 @@
+//封装了一个song类（歌曲），传入和歌曲相关的对象
+export default class Song{
+    constructor({id,mid,singer,name,album,duration,image,url}){
+        this.id = id    //歌曲id
+        this.mid = mid  //歌曲mid
+        this.singer = singer    //歌手信息
+        this.name = name    //歌曲名
+        this.album =album   //专辑名
+        this.duration = duration    //歌曲时长
+        this.image = image  //歌曲图片
+        this.url = url  //歌曲播放地址
+    }
+}
+
+//获取歌曲对象的工厂函数，里面返回了Song类。这么做是为了减少遍历时的代码
+export function createSong(musicData){  //musicData就是获取到的歌曲数据，只取我们需要的
+    return new Song({
+        id:musicData.songid,
+        mid:musicData.songmid,
+        singer:filterSinger(musicData.singer),//歌手名字使用了专门的方法来获取
+        name:musicData.songname,
+        album:musicData.albumname,
+        duration:musicData.interval,
+        image:`https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
+        url:`http://isure.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=32`
+    })
+}
+
+/* 播放源发生变化
+这里是使用的songmid 
+url: `http://isure.stream.qqmusic.qq.com/C100${musicData.songmid}.m4a?fromtag=32`        
+url: `http://thirdparty.gtimg.com/C100${musicData.songmid}.m4a?fromtag=38` 
+*/
+
+
+
+
+//处理歌手名的方法，歌手的数据是数组类型，可能同时有多位歌手，所以在这里专门设置方法处理
+function filterSinger(singer){  //传入歌手数据，是1个数组
+    let ret = []    //定义空数组接收
+    //边界处理。如果没有歌手数据，直接返回空字符串
+    if(!singer){
+        return ''
+    }
+    //遍历这个数组
+    singer.forEach((s) => {
+        //把数组中每项的name属性添加到空数组中
+        ret.push(s.name)
+    })
+
+    //最后把ret数组拼接成字符串并用/分割开
+    return ret.join('/')
+}

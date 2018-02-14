@@ -100,8 +100,5 @@ export default {
 
 <style scoped lang="less">
 @import "../../common/less/main.less";
-.wrapper {
-    height: 100%; //这两个属性必须写，否则滚动不了
-    overflow: hidden;
-}
+
 </style>
