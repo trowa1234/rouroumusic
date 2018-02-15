@@ -6,16 +6,19 @@
     <keep-alive>
         <router-view></router-view>
     </keep-alive>
+    <player></player>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import MHead from './components/m-head/m-head'
 import Tab from './components/tab/tab'
+import Player from './components/player/player'
+
 export default {
   name: 'App',
   components:{
-    MHead,Tab
+    MHead,Tab,Player
   }
 }
 </script>

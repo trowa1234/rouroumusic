@@ -23,7 +23,8 @@
             <!-- 监听滚动派发出来的滚动事件 -->
 
             <div class="song-list-wrapper">
-                <song-list :songs="songs"></song-list>
+                <!-- 接收自定义事件select -->
+                <song-list :songs="songs" @select="selectItem"></song-list>
             </div>
         </scroll>
         <div class="loading-content" v-show="!songs.length">
@@ -37,6 +38,7 @@ import Scroll from "@/base/scroll/scroll";
 import SongList from "@/base/song-list/song-list";
 import Loading from "@/base/loading/loading";
 import { prefixStyle } from "@/common/js/dom"; //css兼容处理方法
+import {mapActions} from 'vuex' //引入vuex的actions
 
 const RESERVED_HEIGHT = 40; //定义顶部高度
 const transform = prefixStyle("transform"); //使用css兼容处理方法处理transform
@@ -82,7 +84,19 @@ export default {
         },
         back() {
             this.$router.back();
-        }
+        },
+        //定义selectItem方法。次方法要控制播放器需要用到vuex的mutations中的多个方法
+        selectItem(item,index){
+            this.selectPlay({
+                list:this.songs,    //传递参数：歌曲列表
+                index   //传递参数：点击歌曲的索引值
+                //这里我们发现没有使用传递出来的参数item，因为这里我们用不到item，但是作为基础组件song-list尽可能提供多的数据出来，当我们需要时就可以使用
+            })
+        },
+        //vuex的mapActions在methods中调用。注意是数组，引入的函数名字是字符串
+        ...mapActions([
+            'selectPlay'    //引入actions中的selectPlay函数
+        ])
     },
     mounted() {
         //获取背景头像的高度
@@ -163,7 +177,7 @@ export default {
         top: 6px;
         z-index: 30;
         .icon-back {
-            font-size: 30px;
+            font-size: @iconfont-size-m;
             color: @text-color-yellow;
         }
     }
