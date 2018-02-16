@@ -57,7 +57,7 @@ export default {
 
                     //处理歌曲数据格式并且把它放入songs数组中
                     this.songs = this._handleSongs(res.data.list)
-                    console.log(this.songs)
+                    //console.log(this.songs)
                 }
             })
         },

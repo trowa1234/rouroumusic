@@ -30,7 +30,7 @@ export default {
       //由于song-list组件是一个基础组件，在它的内部不会写相应的逻辑
       //所以需要它把事件传递出来给它的父组件(music-list)，父组件监听自定义事件(select)再在父组件中定义逻辑代码
       selectItem(item,index){
-          console.log(item)
+          //console.log(item)
           this.$emit('select',item,index)
       }
   }
