@@ -25,7 +25,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   devServer: {
       //由于新版vue-cli取消了dev-server文件，所以后端代理写在了这里。
       before(app){
-          //模拟请求地址
+          //模拟请求地址，歌曲列表数据
           app.get('/api/getDiscList', function(req,res){
               const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
             
@@ -42,6 +42,32 @@ const devWebpackConfig = merge(baseWebpackConfig, {
                   console.log(e)
               })
           })
+
+          //模拟请求地址，歌词数据
+          app.get('/api/lyric', function(req,res){
+            const url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+          
+            axios.get(url,{
+                headers:{
+                    referer:'https://c.y.qq.com',
+                    host:'c.y.qq.com'
+                },
+                params:req.query
+            }).then((response) => {
+                //返回的不是json数据，所以这里需要处理一下数据
+                var ret = response.data
+                if(typeof ret === 'string'){
+                    var reg = /^\w+\(({[^()]+})\)$/
+                    var matches = ret.match(reg)
+                    if(matches){
+                        ret = JSON.parse(matches[1])
+                    }
+                }
+                res.json(ret)   //这里的数据是返回给ajax请求的
+            }).catch((e) => {
+                console.log(e)
+            })
+        })
       },
 
     clientLogLevel: 'warning',

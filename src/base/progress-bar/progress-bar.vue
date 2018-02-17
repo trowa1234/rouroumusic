@@ -64,7 +64,13 @@ export default {
         //跳转到相应位置进行播放
         progressClick(e){
             //获取x轴偏移量，就是点击的位置e.offsetX。把它设置给当前进度
-            this._offset(e.offsetX);
+            //this._offset(e.offsetX);有bug
+
+            //getBoundingClientRect()这个方法可以获取dom元素距离屏幕边的宽度
+            const rect = this.$refs.progressBar.getBoundingClientRect();
+            //e.pageX是用屏幕边到触摸点的宽度。所以用这个值减去左边的距离就能得到触摸到进度条的宽度
+            const offsetWidth = e.pageX - rect.left;
+            this._offset(offsetWidth);
             //派发当前进度到父级
             this._triggerPercent();
         },

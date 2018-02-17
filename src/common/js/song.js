@@ -1,3 +1,7 @@
+import { getLyric } from '@/api/song'
+import { ERR_OK } from '@/api/config'
+import { Base64 } from "js-base64"
+
 //封装了一个song类（歌曲），传入和歌曲相关的对象
 export default class Song {
     constructor({ id, mid, singer, name, album, duration, image, url }) {
@@ -9,6 +13,26 @@ export default class Song {
         this.duration = duration    //歌曲时长
         this.image = image  //歌曲图片
         this.url = url  //歌曲播放地址
+    }
+
+    //请求歌词数据方法。在这个类中定义，这个类的每个实例对象，都可以调用这个方法
+    getLyric() {
+        //如果已经获取到歌词数据，就不用再请求，返回1个promise对象包裹歌词
+        if (this.lyric) {
+            return Promise.resolve(this.lyric)
+        }
+
+        //如果没有歌词数据，发送请求返回1个promise对象包裹歌词
+        return new Promise((resolve, reject) => {
+            getLyric(this.mid).then((res) => {
+                if (res.retcode === ERR_OK) {
+                    this.lyric = Base64.decode(res.lyric);
+                    resolve(this.lyric);
+                } else{
+                    reject('no lytic')
+                }
+            })
+        })
     }
 }
 

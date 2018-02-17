@@ -8,7 +8,7 @@
         <div class="bg-image" :style="bgStyle" ref="bgImage">
             <!-- 头像的蒙层 -->
             <div class="filter" ref="filter"></div>
-            <div class="playbtn" v-show="songs.length>0" ref="playbtn">
+            <div class="playbtn" v-show="songs.length>0" ref="playbtn" @click="random">
                 <i class="iconfont icon-play"></i>
                 <span class="txt">随机播放全部</span>
             </div>
@@ -93,9 +93,17 @@ export default {
                 //这里我们发现没有使用传递出来的参数item，因为这里我们用不到item，但是作为基础组件song-list尽可能提供多的数据出来，当我们需要时就可以使用
             })
         },
+        //点击事件随机播放全部
+        random(){
+            //调用映射的方法，传入歌曲列表
+            this.randomPlay({
+                list:this.songs
+            })
+        },
         //vuex的mapActions在methods中调用。注意是数组，引入的函数名字是字符串
         ...mapActions([
-            'selectPlay'    //引入actions中的selectPlay函数
+            'selectPlay',    //引入actions中的selectPlay函数
+            'randomPlay' //随机播放全部歌曲
         ])
     },
     mounted() {
