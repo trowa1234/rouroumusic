@@ -29,6 +29,11 @@ const mutations = {
     },
     [types.SET_CURRENT_INDEX](state, index) {
         state.currentIndex = index
+    },
+
+    //接收参数(歌单数据)，提交给state.disc
+    [types.SET_DISC](state,disc){
+        state.disc = disc
     }
 }
 

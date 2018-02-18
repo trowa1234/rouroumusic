@@ -86,6 +86,7 @@ export default {
 
 <style scoped lang="less">
 @import "../../common/less/main.less";
+//页面切换动画样式
 .slide-enter-active,
 .slide-leave-active {
     transition: all 0.3s;

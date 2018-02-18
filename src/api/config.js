@@ -3,7 +3,7 @@
 //提交的公共参数
 export const commonParams = {
     g_tk: 5381,
-    inCharset: 'utf-8',
+    inCharset: 'utf8',
     outCharset: 'utf-8',
     notice: 0,
     format: 'jsonp'
@@ -19,6 +19,16 @@ export const singerDetailOptions = {
 
     //name，自定义回调函数的值。如：jsonpCallback:MusicJsonCallbacksinger_track
     name: 'MusicJsonCallbacksinger_track'    
+
+    //prefix，这个是自定义名字+自增。如：jsonpCallback:MusicJsonCallbacksinger_track1
+    //prefix: 'MusicJsonCallbacksinger_track'  
+}
+
+export const songListOptions = {
+    param: 'jsonpCallback',
+
+    //name，自定义回调函数的值。如：jsonpCallback:MusicJsonCallbacksinger_track
+    name: 'playlistinfoCallback'    
 
     //prefix，这个是自定义名字+自增。如：jsonpCallback:MusicJsonCallbacksinger_track1
     //prefix: 'MusicJsonCallbacksinger_track'  

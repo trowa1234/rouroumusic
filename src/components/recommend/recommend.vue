@@ -18,7 +18,7 @@
                 <div class="recommend-list">
                     <h2 class="hot-tit">热门歌单推荐</h2>
                     <ul>
-                        <li v-for="(item,index) in discList" class="item" :key="index">
+                        <li v-for="(item,index) in discList" class="item" :key="index" @click="selectItem(item)">
                             <div class="pic">
                                 <!-- 原来用的是:src，懒加载用v-lazy -->
                                 <img v-lazy="item.imgurl" />
@@ -36,6 +36,9 @@
         <div class="loading-content" v-show="!discList.length">
             <loading></loading>
         </div>
+
+        <!-- 歌单详情页视口 -->
+        <router-view></router-view>
     </div>
 </template>
 
@@ -47,6 +50,7 @@ import Slider from "@/base/slider/slider"; //引入轮播组件
 import Scroll from "@/base/scroll/scroll"; //引入滚动组件
 import Loading from "@/base/loading/loading"; //引入加载组件
 import { playlistMixin } from "@/common/js/mixin"; //引入公共代码片段
+import {mapMutations} from "vuex"; //引入vuex的方法
 
 export default {
     mixins:[playlistMixin],
@@ -64,6 +68,15 @@ export default {
         this._getDiscList();
     },
     methods: {
+        //歌单列表点击事件
+        selectItem(item){
+            //跳转页面至recommend二级页面，地址为歌单的id，路由中也绑定了:id
+            this.$router.push({
+                path:`/recommend/${item.dissid}`
+            })
+            //使用映射的vuex方法，点击的歌单数据传给vuex
+            this.setDisc(item);
+        },
         //定义公共代码片段需要的方法。把歌曲列表作为参数传入。注意这里的playlist是从公共代码中传入的
         handlePlaylist(playlist){
             //查看vuex的playlist是否有数据。有的化设置1个bottom值60px,没有的化设置为0
@@ -102,7 +115,10 @@ export default {
                 //然后把这个标志设置为true，那么下次再触发图片加载事件时if语句就不回再进来了
                 this.oneLoaded = true;
             }
-        }
+        },
+        ...mapMutations({
+            setDisc:'SET_DISC'  //映射方法
+        })
     },
     components: {
         Slider,
@@ -145,7 +161,6 @@ export default {
                 .text {
                     .creator {
                         font-size: @font-size-medium;
-                        line-height: 20px;
                     }
                     .discname {
                         font-size: @font-size-medium;

@@ -42,13 +42,14 @@ export default {
 .song-list{
     .content{
         padding: 10px 20px;
+        font-size: @font-size-medium;
         .name{
-            font-size: @font-size-medium;
             line-height: 24px;
+            .text-overflow();
         }
         .txt{
-            font-size: @font-size-medium;
             color: @text-color-lighter;
+            .text-overflow();
         }
     }
 }

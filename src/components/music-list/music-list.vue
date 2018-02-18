@@ -201,13 +201,15 @@ export default {
         }
     }
     .title {
-        width: 100%;
+        width: 80%;
+        left: 15%;
         position: absolute;
         line-height: 40px;
         z-index: 20;
-        font-size: @font-size-large;
+        font-size: @font-size-medium-x;
         color: @text-color-white;
         text-align: center;
+        .text-overflow();
     }
     .bg-image {
         //背景的样式，是设置了height为0，padding-top：70%，来占位的

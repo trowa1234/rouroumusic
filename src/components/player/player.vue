@@ -643,7 +643,10 @@ export default {
             }
             .song-tit {
                 text-align: center;
-                font-size: @font-size-large;
+                font-size: @font-size-medium-x;
+                .text-overflow();
+                width: 78%;
+                margin: 0 auto;
             }
             .singer-tit {
                 text-align: center;
@@ -833,13 +836,16 @@ export default {
             flex: 1;
             padding-left: 10px;
             height: 40px;
+            overflow: hidden;
             .song-name {
                 font-size: @font-size-medium;
                 margin-bottom: 3px;
+                .text-overflow();
             }
             .singer-name {
                 font-size: @font-size-small;
                 color: @text-color-lighter;
+                .text-overflow();
             }
         }
         .control {

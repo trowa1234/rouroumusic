@@ -34,22 +34,44 @@ export function getDiscList() {
     const data = Object.assign({}, commonParams, {
         //这些参数都是请求时需要的，请求轮播图有所不同
         platform: 'yqq',
-        hostUin:0,
+        hostUin: 0,
         sin: 0,
-        ein:29,
-        sortId:5,
+        ein: 29,
+        sortId: 5,
         needNewCode: 0,
-        categoryId:10000000,
-        rnd:Math.random(),
-        format:'json'
+        categoryId: 10000000,
+        rnd: Math.random(),
+        format: 'json'
     })
 
     //使用插件axios发送ajax，get请求
-    return axios.get(url,{
-        params:data
+    return axios.get(url, {
+        params: data
     }).then((res) => {
         return Promise.resolve(res.data)    //返回的Promise.resolve
     })
 }
 
 
+export function getSongList(disstid) {
+    const url = '/api/getSongList'
+
+    const data = Object.assign({}, commonParams, {
+        disstid,
+        type: 1,
+        json: 1,
+        utf8: 1,
+        onlysong: 0,
+        platform: 'yqq',
+        hostUin: 0,
+        needNewCode: 0,
+        format: 'json'
+    })
+
+    //使用插件axios发送ajax，get请求
+    return axios.get(url, {
+        params: data
+    }).then((res) => {
+        return Promise.resolve(res.data)    //返回的Promise.resolve
+    })
+}
