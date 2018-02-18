@@ -42,6 +42,14 @@ export default {
             default: 4000
         }
     },
+    //这个钩子函数是添加了<keep-alive>标签时(缓存页面)，进入这个页面才会触发activated钩子
+    activated(){
+        this.slider.goToPage(0, 0, 0); //把轮播图设置回第1页
+        this.currentPageIndex = 0;  //设置当前索引为0
+        if (this.autoPlay) {    //自动播放
+                this._play();
+            }
+    },
 
     //在生命周期mounted（HTML挂载完成）时初始化宽度和slider
     //mounted生命周期是在created之后，slot插槽中还没有加载。所以在父组件recommend组件中我们用了v-if先等轮播数据加载完毕后，再渲染slider组件

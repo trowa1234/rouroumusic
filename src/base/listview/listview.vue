@@ -159,6 +159,10 @@ export default {
                 height += item.clientHeight; //累加每个元素的高度
                 this.listHeight.push(height); //每次累加的高度添加到数组。滚动列表每一项元素的高度都被添加到数组中
             }
+        },
+        //从scroll插件中曝露出来的方法，定义一个方法再曝露它给父级singer组件使用
+        refresh(){
+            this.$refs.listview.refresh();
         }
     },
     watch: {
@@ -223,7 +227,7 @@ export default {
 .listview {
     height: 100%;
     overflow: hidden;
-    font-size: @font-size-medium-x;
+    font-size: @font-size-medium;
     position: relative;
     .list-group {
         .list-group-title {

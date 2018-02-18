@@ -43,7 +43,7 @@ export default {
     .content{
         padding: 10px 20px;
         .name{
-            font-size: @font-size-medium-x;
+            font-size: @font-size-medium;
             line-height: 24px;
         }
         .txt{

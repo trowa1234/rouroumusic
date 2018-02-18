@@ -38,13 +38,15 @@ import Scroll from "@/base/scroll/scroll";
 import SongList from "@/base/song-list/song-list";
 import Loading from "@/base/loading/loading";
 import { prefixStyle } from "@/common/js/dom"; //css兼容处理方法
-import {mapActions} from 'vuex' //引入vuex的actions
+import {mapActions} from 'vuex'; //引入vuex的actions
+import {playlistMixin} from '@/common/js/mixin'; //引入公共代码片段
 
 const RESERVED_HEIGHT = 40; //定义顶部高度
 const transform = prefixStyle("transform"); //使用css兼容处理方法处理transform
 const backdrop = prefixStyle("backdrop-filter"); //使用css兼容处理方法处理backdrop-filter
 
 export default {
+    mixins:[playlistMixin], //mixins对象中使用，是1个数组，可以使用多个公共代码
     name: "music-list",
     //此组件需要接收的数据
     props: {
@@ -78,6 +80,15 @@ export default {
         }
     },
     methods: {
+        //定义公共代码片段需要的方法。把歌曲列表作为参数传入。注意这里的playlist是从公共代码中传入的
+        handlePlaylist(playlist){
+            //查看vuex的playlist是否有数据。有的化设置1个bottom值60px,没有的化设置为0
+            const bottom = playlist.length > 0 ? '60px' : '0';
+            //给这个滚动列表添加bottom样式
+            this.$refs.list.$el.style.bottom = bottom;
+            //调用滚动插件提供的方法重新计算高度
+            this.$refs.list.refresh();
+        },
         //监听滚动y轴值
         scroll(pos) {
             this.scrollY = pos.y;

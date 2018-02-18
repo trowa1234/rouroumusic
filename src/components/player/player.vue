@@ -32,6 +32,9 @@
                                 <img :src="currentSong.image" class="image">
                             </div>
                         </div>
+                        <div class="playing-lyric-wrapper">
+                            <div class="playing-lyric">{{playingLyric}}</div>
+                        </div>
                     </div>
                     <!-- 歌词 使用了scroll组件，使其可以滚动-->
                     <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
@@ -145,7 +148,8 @@ export default {
             currentLyric:null,   //存放歌词
             currentLineNum:0,    //歌词当前行数
             currentShow:'cd',    //cd页面和歌词页面切换标志
-            touch:{}    //定义空对象，用来存放这触摸事件中需要传递的一些数据方便访问
+            touch:{},    //定义空对象，用来存放这触摸事件中需要传递的一些数据方便访问
+            playingLyric:'' //cd页当前显示歌词
         }
     },
     computed: {
@@ -197,6 +201,11 @@ export default {
             }
             //使用映射过来方法来改变playing这个数据（vuex中state的数组只能由mutations的方法才能修改）
             this.setPlayingState(!this.playing); //对this.playing进行切换取反。(当是播放状态时切换为false，当是暂停是切换为true)
+
+            //当歌曲暂停时，歌词暂停。当歌曲播放时，歌词播放
+            if(this.currentLyric){
+                this.currentLyric.togglePlay();//插件提供的togglePlay()方法
+            }
         },
         //点击切换播放模式
         changeMode(){
@@ -244,6 +253,12 @@ export default {
             //修改audio提供currentTime，使当前播放时间为0
             this.$refs.audio.currentTime = 0;
             this.$refs.audio.play();    //开始播放
+
+            //解决循环播放时，歌曲重头开始，歌词没有跳回最开始的位置
+            if(this.currentLyric){
+                //使用插件提供的seek()方法跳转到指定的时间，0表示开始
+                this.currentLyric.seek(0);
+            }
         },
         //切换至上一首歌
         prve(){
@@ -251,19 +266,25 @@ export default {
             if(!this.songReady){
                 return
             }
-            //获取上一首个的索引值:当前索引-1
-            let index = this.currentIndex - 1;
-            //如果index为-1了，说明索引已经到第一项了
-            if(index === -1){
-                //就把索引跳转到歌曲列表的最后1位
-                index = this.playlist.length - 1
-            }
-            // 设置此索引值为当前索引值
-            this.setCurrentIndex(index);
 
-            //解决当暂停状态时切换到下一首歌，播放状态若然是false的情况
-            if(!this.playing){
-                this.togglePlaying();
+            //边界判断：当歌曲列表只有1首歌的情况，直接调用循环播放
+            if(this.playlist.length === 1){
+                this.loop();
+            } else{
+                //获取上一首个的索引值:当前索引-1
+                let index = this.currentIndex - 1;
+                //如果index为-1了，说明索引已经到第一项了
+                if(index === -1){
+                    //就把索引跳转到歌曲列表的最后1位
+                    index = this.playlist.length - 1
+                }
+                // 设置此索引值为当前索引值
+                this.setCurrentIndex(index);
+
+                //解决当暂停状态时切换到下一首歌，播放状态若然是false的情况
+                if(!this.playing){
+                    this.togglePlaying();
+                }
             }
 
             //把songReady数据还原为false
@@ -275,19 +296,24 @@ export default {
             if(!this.songReady){
                 return
             }
-             //获取下一首个的索引值:当前索引+1
-            let index = this.currentIndex + 1;
-            //如果index为歌曲列表的个数了，说明索引已经到最后一项了
-            if(index === this.playlist.length){
-                //就把索引跳转到歌曲列表的第1位
-                index = 0;
-            }
-            this.setCurrentIndex(index);
 
-            if(!this.playing){
-                this.togglePlaying();
-            }
+            //边界判断：当歌曲列表只有1首歌的情况，直接调用循环播放
+            if(this.playlist.length === 1){
+                this.loop();
+            } else{
+                 //获取下一首个的索引值:当前索引+1
+                let index = this.currentIndex + 1;
+                //如果index为歌曲列表的个数了，说明索引已经到最后一项了
+                if(index === this.playlist.length){
+                    //就把索引跳转到歌曲列表的第1位
+                    index = 0;
+                }
+                this.setCurrentIndex(index);
 
+                if(!this.playing){
+                    this.togglePlaying();
+                }
+            }
             //把songReady数据还原为false
             this.songReady = false;
         },
@@ -308,11 +334,19 @@ export default {
         },
         //进度条组件传递出来的事件，参数为拖动后的进度百分比
         onProgressBarChange(percent){
-            //audio提供的属性currentTime可读写，就把它修改为总时长 × 百分比
-            this.$refs.audio.currentTime = this.currentSong.duration * percent;
+            //计算当前播放的时间：总时长 × 百分比
+            const currentTime = this.currentSong.duration * percent;
+            //audio提供的属性currentTime可读写，就把它修改为当前播放时间
+            this.$refs.audio.currentTime = currentTime;
             //解决暂停时拖动进度条后为暂停状态，拖动后立即播放
             if(!this.playing){
                 this.togglePlaying();
+            }
+
+            //解决拖动进度条时，歌词的位置没有发生改变
+            if(this.currentLyric){
+                //指定歌词跳转到对应的时间，传入当前播放时间 * 1000毫秒
+                this.currentLyric.seek(currentTime * 1000)
             }
         },
         //歌词获取处理
@@ -332,7 +366,7 @@ export default {
         },
         //歌词行数发送改变的回调，会把当前行数和当前文字作为参数传递出来
         handleLyric({lineNum,txt}){
-            this.currentLineNum = lineNum;
+            this.currentLineNum = lineNum;  //把当前行数赋值给currentLineNum
             if(lineNum > 5){
                 //滚动的位置是指定在5行之后，也就是规定滚动发生的位置，所以使用了当前行数-5这个方法来获取滚动元素的位置
                 let lineEl = this.$refs.lyricLine[lineNum-5];
@@ -341,6 +375,9 @@ export default {
                 //如果当前行数小于5，直接向上滚动
                 this.$refs.lyricList.scrollTo(0,0,1000)
             }
+
+            //把参数当前文字赋值给当前歌词显示playingLyric
+            this.playingLyric = txt;
         },
         //触摸事件Start
         middleTouchStart(e){
@@ -506,13 +543,28 @@ export default {
             if(newSong.id === oldSong.id){
                 return
             }
+
+            //切换歌曲时停止播放当前歌词
+            if(this.currentLyric){
+                this.currentLyric.stop();   //插件提供的stop()方法
+            }
+
+            /* 
             //等待dom加载完毕后执行
             this.$nextTick(() => {
                 //发生改变时调用audio的play方法
                 this.$refs.audio.play();
                 //播放歌曲发送改变时获取歌词
                 this.getLyric();
-            });
+            }); 
+            */
+
+            //为了解决播放器从后台返回前台是可以正常的播放，所以改用延迟1秒执行
+            setTimeout(() => {
+                this.$refs.audio.play();  //播放歌曲
+                this.getLyric();    //获取歌词
+            },1000)
+
         },
 
         //监听播放状态
@@ -643,6 +695,15 @@ export default {
                         }
                     }
                 }
+                .playing-lyric-wrapper{
+                    width: 100%;
+                    margin-top: 60px;
+                    .playing-lyric{
+                        text-align: center;
+                        font-size: @font-size-medium;
+                        line-height: 20px;
+                    }
+                }
             }
             .middle-r{
                 display: inline-block;
@@ -674,7 +735,7 @@ export default {
             .dot-wrapper{
                 text-align: center;
                 font-size: 0;
-                margin-bottom: 10px;
+                margin-bottom: 20px;
                 .dot{
                     display: inline-block;
                     vertical-align: middle;

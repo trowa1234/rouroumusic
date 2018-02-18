@@ -1,7 +1,7 @@
 <template>
-    <div class="singer">
+    <div class="singer" ref="singer">
         <!-- 传入歌手列表数据。绑定传递出来的select事件 -->
-        <listview :data="singerList" @select="selectSinger"></listview>
+        <listview :data="singerList" @select="selectSinger" ref="listview"></listview>
         <!-- 歌手详情页的视口，即2级页面显示的地方 -->
         <router-view></router-view>
     </div>
@@ -12,6 +12,7 @@ import { getSingerList } from "@/api/singer"; //引入获取歌手列表数据�
 import { ERR_OK } from "@/api/config";
 import Singer from "@/common/js/singer"; //引入创建歌手的类
 import listview from "@/base/listview/listview"; //引入listview组件
+import {playlistMixin} from '@/common/js/mixin'; //引入公共代码片段
 
 //使用了vuex提供的语法糖，可以在这个页面简写vuex的代码。
 //这里引入的是mapMutations就是方法模块，所以就在methods中添加vuex中定义的方法
@@ -21,6 +22,7 @@ const HOT_NAME = "热门"; //定义热门标签
 const HOT_SINGER_LEN = 10; //定义热门歌手数量
 
 export default {
+    mixins:[playlistMixin], //公共代码
     name: "singer",
     data() {
         return {
@@ -31,6 +33,15 @@ export default {
         this._getSingerList();
     },
     methods: {
+        //定义公共代码片段需要的方法。把歌曲列表作为参数传入。注意这里的playlist是从公共代码中传入的
+        handlePlaylist(playlist){
+            //查看vuex的playlist是否有数据。有的化设置1个bottom值60px,没有的化设置为0
+            const bottom = playlist.length > 0 ? '60px' : '0';
+            //给这个滚动列表添加bottom样式
+            this.$refs.singer.style.bottom = bottom;
+            //重新计算高度。这个方法在需要从listview组件中曝露出来，绑定listview
+            this.$refs.listview.refresh();
+        },
         //从listview传递处理的select事件处理函数。singer就是里面传递出来的item，歌手的实例对象
         selectSinger(singer){
             //使用路由跳转方法
