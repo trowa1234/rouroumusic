@@ -21,3 +21,6 @@ export const currentSong = (state) => {
 
 //把state.disc曝露出去。歌单信息
 export const disc = state => state.disc
+
+//把state.topList曝露出去。排行榜信息
+export const topList = state => state.topList

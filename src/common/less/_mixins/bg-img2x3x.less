@@ -9,6 +9,8 @@
 */
 
 // 2x,3x背景图片。这种写法加入了“~”这个符号，解决了路径问题，从使用这个less的文件的位置去找图片路径。
+//图片命名格式：2倍图（test_2x.png）  3倍图（test_3x.png）
+//使用 .icon0{.bg-image("./test")}  只需要写_前面的文件名即可
 .bg-image(@url) {
     background-image:~"url(@{url}_2x.png)";
     @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {

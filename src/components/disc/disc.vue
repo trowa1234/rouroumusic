@@ -1,7 +1,7 @@
 <template>
     <!-- 使用transition标签实现页面跳转动画 -->
     <transition name="slide">
-        <!-- 传入歌手名、歌手头像、歌曲数据 -->
+        <!-- 传入歌单名、歌单图片、歌曲数据 -->
         <music-list :title="title" :bg-image="bgImage" :songs="songs"></music-list>
     </transition>
 </template>
@@ -79,7 +79,7 @@ export default {
 //页面切换动画样式
 .slide-enter-active,
 .slide-leave-active {
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 .slide-enter,
 .slide-leave-to {

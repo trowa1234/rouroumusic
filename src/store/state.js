@@ -12,7 +12,8 @@ const state = {
     mode: playMode.sequence, //播放模式控制
     currentIndex: -1, //当前播放音乐的索引
 
-    disc:{} //定义存放歌单数据的对象
+    disc:{}, //定义存放歌单数据的对象
+    topList:{}  //定义存放排行榜数据的对象
 }
 
 //把state曝露出去

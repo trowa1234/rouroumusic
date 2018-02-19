@@ -2,7 +2,7 @@
     <div class="rank" ref="rank">
         <scroll :data="topList" class="toplist" ref="toplist">
             <ul>
-                <li class="item" v-for="(item,index) in topList" :key="index">
+                <li class="item" v-for="(item,index) in topList" :key="index" @click="selectItem(item)">
                     <div class="pic">
                         <img v-lazy="item.picUrl" />
                     </div>
@@ -28,6 +28,7 @@ import { ERR_OK } from "@/api/config";
 import Scroll from "@/base/scroll/scroll";
 import Loading from "@/base/loading/loading";
 import {playlistMixin} from "@/common/js/mixin";
+import {mapMutations} from "vuex";
 
 export default {
     mixins:[playlistMixin],
@@ -41,6 +42,14 @@ export default {
         this._getTopList()  
     },
     methods:{
+        selectItem(item){
+            this.$router.push({
+                path:`/rank/${item.id}`
+            })
+            //把点击的排行榜数据提交给state.topList
+            this.setTopList(item);
+        },
+        //解决当有歌曲播放时，页面底部位置。
         handlePlaylist(playlist){
             const bottom = playlist.length > 0 ? '60px' : '0';
             this.$refs.rank.style.bottom = bottom;
@@ -54,7 +63,10 @@ export default {
                     this.topList = res.data.topList;
                 }
             })
-        }
+        },
+        ...mapMutations({
+            setTopList:"SET_TOP_LIST"   //从vuex映射方法
+        })
     },
     components:{
         Scroll,

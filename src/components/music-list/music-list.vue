@@ -24,7 +24,7 @@
 
             <div class="song-list-wrapper">
                 <!-- 接收自定义事件select -->
-                <song-list :songs="songs" @select="selectItem"></song-list>
+                <song-list :songs="songs" @select="selectItem" :rank="rank"></song-list>
             </div>
         </scroll>
         <div class="loading-content" v-show="!songs.length">
@@ -64,6 +64,10 @@ export default {
         songs: {
             type: Array,
             default: []
+        },
+        rank:{
+            type:Boolean,
+            default:false
         }
     },
     data() {

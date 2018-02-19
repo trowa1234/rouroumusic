@@ -34,6 +34,11 @@ const mutations = {
     //接收参数(歌单数据)，提交给state.disc
     [types.SET_DISC](state,disc){
         state.disc = disc
+    },
+
+    //接收参数(排行榜数据)，提交给state.topList
+    [types.SET_TOP_LIST](state,topList){
+        state.topList = topList
     }
 }
 
