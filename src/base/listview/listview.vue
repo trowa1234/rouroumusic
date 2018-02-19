@@ -36,7 +36,7 @@
             <h2 class="fixed-title">{{fixedTitle}}</h2>
         </div>
         <div class="loading-content" v-show="!data.length">
-            <loading></loading>
+            <loading class="loading"></loading>
         </div>
     </scroll>
 </template>
@@ -284,12 +284,17 @@ export default {
         }
     }
     .loading-content {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(2, 2, 2, 0.4);
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(2, 2, 2, 0.4);
+        .loading{
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);  //垂直居中
+        }
   }
 }
 </style>

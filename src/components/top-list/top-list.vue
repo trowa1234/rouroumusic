@@ -52,8 +52,10 @@ export default {
                 return
             }
             getMusicList(this.topList.id).then((res) => {
-                this.songs = this._handleSongs(res.songlist) //处理歌曲数据后赋值给songs
-                //console.log(this.songs)
+                if(res.code === ERR_OK){
+                    this.songs = this._handleSongs(res.songlist) //处理歌曲数据后赋值给songs
+                    //console.log(this.songs)
+                }
             })
         },
         //这个方法主要的作用是把歌曲数据转换成我们期望的数据格式

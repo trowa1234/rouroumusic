@@ -23,13 +23,10 @@ export default {
 .loading{
     width: 100%;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);  //垂直居中
     img{width: 30px;height: 30px;}
     .text{
         line-height: 40px;
-        font-size: @font-size-medium-x;
+        font-size: @font-size-small;
         color:#fff;
     }
 }

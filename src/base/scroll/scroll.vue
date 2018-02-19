@@ -30,6 +30,11 @@ export default {
         listenScroll: {
             type: Boolean,
             default: false
+        },
+        //是否开启上拉加载功能
+        pullup:{
+            type:Boolean,
+            default:false
         }
     },
     //当dom加载完毕时初始化插件
@@ -60,6 +65,17 @@ export default {
                 this.scroll.on('scroll',(pos) => {
                     //使用$emit把这个事件派发给父组件，父组件绑定'scroll'事件就可以接收
                     me.$emit('scroll',pos)
+                })
+            }
+
+            //如果开启上拉加载功能
+            if(this.pullup){
+                //监听滚动结束事件
+                this.scroll.on('scrollEnd', () => {
+                    //比较目前的y轴值是否小于等于最大y轴值。+50就是说明还有50就到底部了
+                    if(this.scroll.y <= (this.scroll.maxScrollY + 50)){
+                        this.$emit('scrollToEnd'); //达到条件就派发自定义scrollToEnd事件出去
+                    }
                 })
             }
         },

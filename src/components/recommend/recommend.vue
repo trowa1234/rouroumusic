@@ -34,7 +34,7 @@
         </scroll>
         <!-- loading组件需要一个外层来进行遮罩和使用v-show来控制显示的时机，当歌单数据加载出来后就隐藏 -->
         <div class="loading-content" v-show="!discList.length">
-            <loading></loading>
+            <loading class="loading"></loading>
         </div>
 
         <!-- 歌单详情页视口 -->
@@ -178,6 +178,11 @@ export default {
         left: 0;
         right: 0;
         background: rgba(2, 2, 2, 0.4);
+        .loading{
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);  //垂直居中
+        }
     }
 }
 </style>
