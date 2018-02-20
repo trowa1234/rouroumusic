@@ -35,6 +35,11 @@ export default {
         pullup:{
             type:Boolean,
             default:false
+        },
+        //是否开启监听滚动开始事件
+        beforeScroll:{
+            type:Boolean,
+            default:false
         }
     },
     //当dom加载完毕时初始化插件
@@ -76,6 +81,14 @@ export default {
                     if(this.scroll.y <= (this.scroll.maxScrollY + 50)){
                         this.$emit('scrollToEnd'); //达到条件就派发自定义scrollToEnd事件出去
                     }
+                })
+            }
+
+            //如果监听滚动开始事件开启时
+            if(this.beforeScroll){
+                this.scroll.on('beforeScrollStart',() => {
+                    //当滚动开始的时候向外派发beforeScroll自定义事件
+                    this.$emit('beforeScroll')
                 })
             }
         },

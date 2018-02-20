@@ -57,7 +57,15 @@ export default new Router({
     {
         path: '/search', //搜索页
         name: 'Search',
-        component: Search
+        component: Search,
+        children: [ 
+            //搜索页子路由，点击歌手搜索跳转到歌手详情页
+            {
+                path: ':id',
+                name: 'SearchSingerDetail',
+                component: SingerDetail
+            }
+        ]
     }
     ]
 })

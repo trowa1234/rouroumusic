@@ -1,8 +1,16 @@
 <template>
     <!-- 接收自定义事件scrollToEnd，这是加载更多的时机 -->
-    <scroll class="suggest" :data="result" :pullup="pullup" @scrollToEnd="searchMore" ref="suggest">
+    <!-- 接收自定义事件beforeScroll，滚动开始时派发的事件，用来解决真机字母键盘不会自动隐藏的问题 -->
+    <scroll class="suggest" 
+            :data="result" 
+            :pullup="pullup" 
+            :beforeScroll="beforeScroll" 
+            @scrollToEnd="searchMore" 
+            @beforeScroll="listScroll"
+            ref="suggest"
+    >
         <ul class="suggest-list">
-            <li class="suggest-item" v-for="(item,index) in result" :key="index">
+            <li @click="selectItem(item)" class="suggest-item" v-for="(item,index) in result" :key="index">
                 <div class="icon">
                     <!-- 绑定图标的样式，需要判断是歌手还是歌曲 -->
                     <i class="iconfont" :class="getIconCls(item)"></i>
@@ -14,6 +22,10 @@
             </li>
             <loading v-show="hasMore"></loading>
         </ul>
+        <!-- 无搜索数据时显示 -->
+        <div v-show="!result.length && !hasMore" class="no-result-wrapper">
+            <no-result text="抱歉，暂无搜索结果"></no-result>
+        </div>
     </scroll>
 </template>
 
@@ -23,6 +35,9 @@ import { ERR_OK } from "@/api/config";
 import { createSong } from "@/common/js/song";
 import Scroll from "@/base/scroll/scroll";
 import Loading from "@/base/loading/loading";
+import {mapMutations, mapActions} from "vuex";
+import Singer from "@/common/js/singer";
+import NoResult from "@/base/no-result/no-result";
 
 const TYPE_SINGER = "singer"; //定义常量字符
 const perpage = 20; //定义返回数据的条数
@@ -46,14 +61,39 @@ export default {
             page: 1, //定义传入请求参数的搜索页数，默认第1页
             result: [], //接收获取的搜索数据
             pullup: true, //传入配置，开启scroll组件上拉加载
-            hasMore: true //定义一个标志位，表示还有内容需要加载
+            hasMore: true, //定义一个标志位，表示还有内容需要加载
+            beforeScroll:true   //传入scroll配置文件，开启监听滚动开始事件
         };
     },
     methods: {
+        //搜索列表点击事件
+        selectItem(item){
+            //如果是歌手对象
+            if(item.type === TYPE_SINGER){
+                // 调用歌手类构造函数，生成歌手对象
+                const singer = new Singer({
+                    id:item.singermid,
+                    name:item.singername
+                })
+                //以生成歌手对象的id作为路径，跳转到seacher二级页面，歌手页面
+                this.$router.push({
+                    path:`/search/${singer.id}`
+                })
+                //把生成的歌手对象传入vuex
+                this.setSinger(singer);
+            }
+            //如果是歌曲对象（在获取搜索数据时已经对歌曲进行了处理）
+            else{
+                this.insertSong(item);
+            }
+
+            //向外派发事件自定义事件select
+            this.$emit('select');
+        },
         getIconCls(item) {
             //判断对象是否有type属性（自己定义的属性），有的话说明这个数据是歌手
             if (item.type === TYPE_SINGER) {
-                return "icon-user"; //头像图标
+                return "icon-tx"; //头像图标
             } else {
                 return "icon-yinfu"; //音符图标
             }
@@ -85,6 +125,14 @@ export default {
                 }
             )
         },
+        //监听列表滚动开始
+        listScroll(){
+            this.$emit('listScroll');//继续往上一级派发事件
+        },
+        //曝露 refresh()方法
+        refresh(){
+            this.$refs.suggest.refresh();
+        },
         //当搜索字符发生改变时调用，重新请求
         _search() {
             //只要改变了搜索字，就重置page参数为1
@@ -98,7 +146,7 @@ export default {
             search(this.query, this.showSinger, this.page, perpage).then((res) => {
                     if (res.code === ERR_OK) {
                         this.result = this._getResult(res.data); //对数据做处理后赋值给result
-                        console.log(res.data);
+                        //console.log(res.data);
 
                         //这个方法来检测数据的内容是否全部加载
                         this._checkMore(res.data);
@@ -143,7 +191,13 @@ export default {
                 //此时把这个标志为设置为false，表示没有内容了
                 this.hasMore = false;
             }
-        }
+        },
+        ...mapMutations({
+            setSinger:'SET_SINGER'
+        }),
+        ...mapActions([
+            'insertSong'
+        ])
     },
     watch: {
         //当搜索字符改变时调用search方法发送请求
@@ -153,7 +207,8 @@ export default {
     },
     components: {
         Scroll,
-        Loading
+        Loading,
+        NoResult
     }
 };
 </script>

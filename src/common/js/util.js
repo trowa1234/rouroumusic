@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
 export function shuffle(arr) {
 
     //复制这个数组，这样就不会改变原数组
-    let _arr = arr.slice();    
+    let _arr = arr.slice();
 
     for (let i = 0; i < _arr.length; i++) {
         let j = getRandomInt(0, i)
@@ -17,4 +17,19 @@ export function shuffle(arr) {
         _arr[j] = t;
     }
     return _arr
+}
+
+
+//函数节流方法。动作停止下来后200毫秒触发，一直在动作不触发
+//两个参数。1需要执行的函数，2延迟时间
+export function debounce(fn, delay) {
+    let timer;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+            fn.apply(this, args)
+        }, delay)
+    }
 }

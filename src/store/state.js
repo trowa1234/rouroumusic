@@ -1,4 +1,5 @@
 import { playMode } from '@/common/js/config'   //为了语义化代码，定义playMode播放模式
+import { loadSearch } from "@/common/js/cache"  //获取本地缓存方法
 
 //所有的状态由state来管理
 const state = {
@@ -13,7 +14,9 @@ const state = {
     currentIndex: -1, //当前播放音乐的索引
 
     disc:{}, //定义存放歌单数据的对象
-    topList:{}  //定义存放排行榜数据的对象
+    topList:{},  //定义存放排行榜数据的对象
+
+    searchHistory:loadSearch()    //定义搜索历史列表，取的本地缓存。
 }
 
 //把state曝露出去

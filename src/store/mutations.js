@@ -39,6 +39,11 @@ const mutations = {
     //接收参数(排行榜数据)，提交给state.topList
     [types.SET_TOP_LIST](state,topList){
         state.topList = topList
+    },
+
+    //接收参数（搜索历史数据），提交给state.searchHistory
+    [types.SET_SEARCH_HISTORY](state,history){
+        state.searchHistory = history
     }
 }
 

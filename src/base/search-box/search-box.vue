@@ -2,13 +2,15 @@
     <div class="search-box">
         <i class="iconfont icon-search"></i>
         <!-- 使用v-model双向绑定输入框 -->
-        <input type="text" class="box" :placeholder="placeholder" v-model="query" />
+        <input ref="query" type="text" class="box" :placeholder="placeholder" v-model="query" />
         <!-- 当输入的框有内容时才显示清空按钮 -->
         <i v-show="query" class="iconfont icon-del" @click="clear"></i>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+import { debounce } from "@/common/js/util";
+
 export default {
     name: "search-box",
     props: {
@@ -31,14 +33,19 @@ export default {
         //设置输入框文字的方法，曝露出去给父组件使用
         setQuery(query){
             this.query = query;
+        },
+        //定义方法，是搜索框失去焦点，从而隐藏手机键盘
+        blur(){
+            this.$refs.query.blur();
         }
     },
     created() {
         //created时监视query这个数据，发生变化时就把派发自定义事件query出去
         //并把新的query值作为参数传递出去
-        this.$watch("query", newQuery => {
+        //解决每改变1个字符就会发送搜索数据请求.使用节流函数debounce()
+        this.$watch("query", debounce((newQuery) => {
             this.$emit("query", newQuery);
-        });
+        },200));
     }
 };
 </script>
@@ -57,7 +64,7 @@ export default {
         border: 0;
         color: @text-color-white;
         font-size: @font-size-medium;
-        line-height: 18px;
+        line-height: 28px;
         margin-left: 10px;
         &::placeholder {
             color: @text-color-lighter;

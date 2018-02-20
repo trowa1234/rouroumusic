@@ -22,3 +22,6 @@ export const SET_DISC = 'SET_DISC'
 
 //获取排行榜方法名
 export const SET_TOP_LIST = 'SET_TOP_LIST'
+
+//获取搜索字段列表
+export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
