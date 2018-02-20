@@ -16,7 +16,7 @@ export function getHotKey() {
 }
 
 //搜索数据抓取。请求需要3个参数：1个是搜索字符，1个是搜索页的页码，1个是是否显示歌手信息，1个返回数据条数
-export function search(query, page, zhida, perpage) {
+export function search(query, zhida, page, perpage) {
     //请求地址
     const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
 

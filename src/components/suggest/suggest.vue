@@ -113,9 +113,8 @@ export default {
             }
             //请求的页数每次+1
             this.page++;
-            
-            //继续发送请求，只是page的参数变了
-            search(this.query, this.showSinger, this.page, perpage).then((res) => {
+            //继续发送请求，只是page的参数变了。把是否显示歌手也设置为了false
+            search(this.query, false, this.page, perpage).then((res) => {
                     if (res.code === ERR_OK) {
                         //这需要注意不能把请求到的结果直接赋值给result,把新的数据和原来的数据拼接
                         this.result = this.result.concat(this._getResult(res.data));
@@ -138,7 +137,7 @@ export default {
             //只要改变了搜索字，就重置page参数为1
             this.page = 1;
             //重置hasMore为true，表示还有内容加载
-            this.hasMore = true
+            this.hasMore = true;
             //把滚动列表的位置置于顶部
             this.$refs.suggest.scrollTo(0,0);
             
