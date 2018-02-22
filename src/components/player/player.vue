@@ -104,11 +104,15 @@
                         <i @click.stop="togglePlaying" class="iconfont" :class="playIcon"></i>
                     </progress-circle>
                 </div>
-                <div class="control">
+                <!-- 播放列表图标，点击显示播放列表 -->
+                <div class="control" @click.stop="showPlaylist">
                     <i class="iconfont icon-songlist"></i>
                 </div>
             </div>
         </transition>
+
+        <!-- 歌曲列表组件 -->
+        <playlist ref="playlist"></playlist>
 
         <!-- 发现点击前进后退按钮过快，会发生报错，这是由于歌曲还没有加载完毕造成的 -->
         <!-- 所以绑定两个事件，一个是audio的canplay事件（歌曲是否加载完成），一个是error事件（错误回调） -->
@@ -131,14 +135,16 @@ import { formatTime } from "@/common/js/song";  //格式化时间的方法
 import ProgressBar from "@/base/progress-bar/progress-bar"; //进度条
 import ProgressCircle from "@/base/progress-circle/progress-circle"; //环形进度条
 import {playMode} from '@/common/js/config'; //引入播放模式对象
-import {shuffle} from "@/common/js/util";    //引入数组乱序方法
 import Lyric from "lyric-parser"; //引入歌词插件
 import Scroll from "@/base/scroll/scroll"; //滚动插件
+import Playlist from "@/components/playlist/playlist" //歌曲列表组件
+import {playerMixin} from "@/common/js/mixin"; //引入播放模式切换公共代码.切换播放模式的代码需要到这里查看
 
 const transform = prefixStyle("transform");
 const transitionDuration = prefixStyle('transitionDuration'); //动画时间css
 
 export default {
+    mixins:[playerMixin],
     name: "player",
     data(){
         return {
@@ -169,19 +175,11 @@ export default {
         percent(){
             return this.currentTime / this.currentSong.duration;
         },
-        //播放模式样式处理
-        iconMode(){
-            return this.mode === playMode.sequence ? 'icon-listloop' : this.mode === playMode.loop ? "icon-singleloop" : "icon-random";
-        },
         //计算属性中使用mapGetters
         ...mapGetters([
-            "playlist", 
             "fullScreen", 
-            "currentSong", 
             "playing", 
-            "currentIndex",
-            "mode",
-            "sequenceList"
+            "currentIndex"
         ])
     },
     methods: {
@@ -206,38 +204,6 @@ export default {
             if(this.currentLyric){
                 this.currentLyric.togglePlay();//插件提供的togglePlay()方法
             }
-        },
-        //点击切换播放模式
-        changeMode(){
-            //每次点击mode加1。
-            //因为有3种播放模式，每种播放模式设置的值是:0,1,2。要让点击后的值始终在0,1,2之间循环
-            //所以用模3。当mode为0时(0+1)%3=1；当mode为1时(1+1)%3=2；当mode为2时(2+1)%3=0。
-            const mode = (this.mode + 1) % 3;
-            //修改mode的方法
-            this.setPlayMode(mode);
-
-            let list = null; //用来存放歌曲列表数组
-            //当是随机模式时
-            if(mode === playMode.random){
-                // 使用乱序方法对歌曲列表重新排序，并且保存到list中
-                list = shuffle(this.sequenceList);
-            }else{
-                // 如果不是随机播放模式则直接保存列表
-                list = this.sequenceList;
-            }
-            //切换模式歌曲不会切换
-            this.resetCurrentIndex(list);
-            //把播放列表设置为新的列表
-            this.setPlaylist(list);
-        },
-        //切换播放模式时，当前播放的歌曲不会被切换
-        resetCurrentIndex(list){
-            //使用ES6中的findIndex()方法，在新得到的数组中去匹配当前播放歌曲的id，找到了就返回新数组中首歌曲的索引值
-            let index = list.findIndex((item) => {
-                return item.id === this.currentSong.id
-            })
-            //把这个索引值设置给当前所索引值，歌曲就不会被切换
-            this.setCurrentIndex(index)
         },
         //歌曲播放结束事件
         end(){
@@ -379,7 +345,13 @@ export default {
             //把参数当前文字赋值给当前歌词显示playingLyric
             this.playingLyric = txt;
         },
-        //触摸事件Start
+        //点击显示歌曲列表
+        showPlaylist(){
+            //调用playlist组件的方法
+            this.$refs.playlist.show();
+        },
+
+        //触摸事件Start（切换cd图片页和歌词页面）
         middleTouchStart(e){
             this.touch.initiated = true;    //初始化
 
@@ -529,16 +501,18 @@ export default {
             return formatTime(time);
         },
         ...mapMutations({
-            setFullScreen: "SET_FULL_SCREEN", //设置fullScreen方法。把mutations中的SET_FULL_SCREEN方法映射给setFullScreen
-            setPlayingState: "SET_PLAYING_STATE", //设置playing方法
-            setCurrentIndex:"SET_CURRENT_INDEX",//设置currentIndex方法
-            setPlayMode:"SET_PLAY_MODE", //设置mode方法
-            setPlaylist:"SET_PLAYLIST" //设置播放列表playlist方法
+            setFullScreen: "SET_FULL_SCREEN" //设置fullScreen方法。把mutations中的SET_FULL_SCREEN方法映射给setFullScreen
         })
     },
     watch: {
         //监听当前播放歌曲
         currentSong(newSong, oldSong) {
+            //解决在删除掉最后1首歌时，会报错。
+            //这是因为当删除了最后1首歌曲，newSong这个数据就是undefind，所以会执行下面的语句
+            if(!newSong.id){
+                return
+            }
+
             //解决暂停时切换播放模式会导致继续播放，设置判断如果两首歌为同一首歌则return
             if(newSong.id === oldSong.id){
                 return
@@ -579,7 +553,8 @@ export default {
     components:{
         ProgressBar,
         ProgressCircle,
-        Scroll
+        Scroll,
+        Playlist
     }
 };
 </script>

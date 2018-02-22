@@ -110,7 +110,7 @@ export default {
         },
         //点击事件随机播放全部
         random(){
-            //调用映射的方法，传入歌曲列表
+            //调用映射的方法，传入歌曲列表。是以对象的形式传入的，所以vuex的actions中也要以对象形式接收参数
             this.randomPlay({
                 list:this.songs
             })
