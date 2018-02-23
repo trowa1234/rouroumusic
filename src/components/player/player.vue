@@ -79,7 +79,7 @@
                             <i @click="next" class="iconfont icon-next" :class="disableCls"></i>
                         </div>
                         <div class="icon">
-                            <i class="iconfont icon-favorite"></i>
+                            <i class="iconfont icon-favorite" @click="toggleFavorite(currentSong)" :class="getFavoriteIcon(currentSong)"></i>
                         </div>
                     </div>
                 </div>
@@ -765,6 +765,11 @@ export default {
                     .iconfont {
                         font-size: @iconfont-size-l;
                         color: @theme-yellow;
+                    }
+                    .icon-favorite{
+                        &.favorited{
+                        color: @brand-danger;
+                        }
                     }
                     .icon-play,
                     .icon-pause {

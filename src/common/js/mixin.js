@@ -43,10 +43,38 @@ export const playerMixin = {
             "sequenceList",     //引入播放列表数据
             "currentSong",      //引入当前播放歌曲
             "playlist",         //引入播放歌曲列表
-            "mode"              //引入当前播放模式
+            "mode",              //引入当前播放模式
+            "favoriteList"      //引入收藏歌曲列表
         ])
     },
     methods:{
+        //点击事件，添加/删除收藏歌曲
+        toggleFavorite(song){
+            //如收藏列表有这首歌，点击就从列表中删除这首歌
+            if(this.isFavorite(song)){
+                this.deleteFavoriteList(song)
+            } else{ //收藏列表没有这首歌，点击添加这首歌到收藏列表
+                this.saveFavoriteList(song)
+            }
+        },
+        //绑定收藏图标样式
+        getFavoriteIcon(song){
+            //如果收藏列表中有这首歌曲，添加样式favorited
+            if(this.isFavorite(song)){
+                return 'favorited'
+            }
+            //如果没有，不添加样式名
+            return ''
+        },
+        //匹配收藏的列表中是否有当前歌曲
+        isFavorite(song){
+            const index = this.favoriteList.findIndex((item) => {
+                return item.id === song.id
+            })
+
+            //如果有这首歌返回true，没有则返回false
+            return index > -1
+        },
         //点击切换播放模式
         changeMode(){
             //每次点击mode加1。
@@ -84,7 +112,11 @@ export const playerMixin = {
             setCurrentIndex:"SET_CURRENT_INDEX",//映射设置currentIndex方法
             setPlayMode:"SET_PLAY_MODE", //映射设置mode方法
             setPlaylist:"SET_PLAYLIST" //映射设置播放列表playlist方法
-        })
+        }),
+        ...mapActions([
+            "saveFavoriteList",     //映射添加歌曲到收藏列表
+            "deleteFavoriteList"    //删除收藏歌曲
+        ])
     }
 }
 

@@ -4,8 +4,8 @@ import * as types from './mutation-types' //引入方法名
 import { playMode } from '@/common/js/config' //播放模式配置文件
 import { shuffle } from '@/common/js/util' //数组乱序方法
 
-//1、把字符存入本地缓存的方法。2、删除指定数据方法。3、删除所有数据方法
-import { saveSearch, deleteSearch, clearSearch, savePlay } from "@/common/js/cache"
+//1、保存搜索字段的方法。2、删除指定数据方法。3、删除所有数据方法。4、添加播放过的歌曲。5、添加收藏歌曲。6、删除收藏歌曲
+import { saveSearch, deleteSearch, clearSearch, savePlay, saveFavorite, deleteFavorite} from "@/common/js/cache"
 
 //使用ES6中的findIndex()方法，随机数组中去匹配当前播放歌曲的id，找到了就返回新数组中首歌曲的索引值
 function findIndex(list, song) {
@@ -163,7 +163,19 @@ export const deleteSongList = function ({ commit }) {
     commit(types.SET_PLAYING_STATE, false) //关闭播放状态
 }
 
+
 //保存当前播放歌曲到state.playHistory。还保存到本地缓存中
 export const savePlayHistory = function ({ commit }, song) {
     commit(types.SET_PLAY_HISTORY, savePlay(song))
+}
+
+//添加指定歌曲到收藏列表方法。
+export const saveFavoriteList = function({commit},song){
+    //saveFavorite方法先把数据存储到本地缓存，再返回数据给vuex
+    commit(types.SET_FAVORITE_LIST, saveFavorite(song))
+}
+
+//删除收藏列表中指定的歌曲。
+export const deleteFavoriteList = function({commit},song){
+    commit(types.SET_FAVORITE_LIST, deleteFavorite(song))
 }

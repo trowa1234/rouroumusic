@@ -8,7 +8,10 @@ const SEARCH_MAX_LENGTH = 15;   //本地储存搜索列表记录最大条数
 const PLAY_KEY = '__play__'; //定义本地缓存播放列表的名字
 const PLAY_MAX_LENGTH = 50; //本地储存播放列表记录最大条数
 
-//存放本地缓存的规则方法。加入的值在最前面，保留15条记录，超过记录删除最后1条记录。传入4个参数：
+const FAVORITE_KEY = '__favorite__'; //定义本地缓存收藏列表的名字
+const FAVORITE_MAX_LENGTH = 200; //本地储存收藏列表记录最大条数
+
+//存放本地缓存的规则方法。加入的值在最前面，保留指定条数的记录，超过记录删除最后1条记录。传入4个参数：
 // 第1个是本地缓存数组
 // 第2个是要存入的值
 // 第3个是比较函数（用于对比传入的值和缓存中存在的值）
@@ -94,7 +97,7 @@ export function clearSearch(){
 
 
 
-//添加播放的歌曲到本地缓存
+//添加播放过的歌曲到本地缓存
 export function savePlay(song){
     let songs = storage.get(PLAY_KEY,[]); //获取本地localStorage名为PLAY_KEY的值
 
@@ -114,4 +117,38 @@ export function savePlay(song){
 //获取播放列表本地缓存的方法
 export function loadPlay(){
     return storage.get(PLAY_KEY,[])
+}
+
+
+//添加歌曲到收藏列表，本地缓存
+export function saveFavorite(song){
+    let songs = storage.get(FAVORITE_KEY,[]);
+
+    //插入歌曲方法
+    insertArray(songs,song,(item) => {
+        return song.id === item.id;
+    })
+
+    storage.set(FAVORITE_KEY,songs); //设置新数组到本地缓存
+
+    return songs
+}
+
+//删除本地缓存收藏列表的歌曲
+export function deleteFavorite(song){
+    let songs = storage.get(FAVORITE_KEY,[]);
+
+    //删除歌曲方法
+    deleteFromArray(songs,(item) => {
+        return song.id === item.id;
+    })
+
+    storage.set(FAVORITE_KEY,songs);
+
+    return songs;
+}
+
+//读取本地缓存收藏列表
+export function loadFavorite(){
+    return storage.get(FAVORITE_KEY,[]);
 }

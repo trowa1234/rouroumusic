@@ -4,7 +4,9 @@
         <h1 class="tit">
             {{tit}}
         </h1>
-        <i class="iconfont icon-user"></i>
+        <router-link to="/user" class="user" tag="div">
+            <i class="iconfont icon-user"></i>
+        </router-link>
     </div>
 </template>
 
@@ -43,12 +45,14 @@ export default {
         background-size: cover;
         margin: 5px 5px 0;
     }
-    .icon-user {
+    .user {
         position: absolute;
         right: 10px;
         top: 8px;
-        font-size: 28px;
-        color: #fff;
+        .icon-user {
+            font-size: 28px;
+            color: #fff;
+        }
     }
 }
 </style>

@@ -44,7 +44,7 @@ export default {
 .switches{
     display: flex;
     align-items: center;
-    width: 80%;
+    width: 68%;
     margin: 0 auto;
     border: 1px solid @body-bg-blacker;
     border-radius: 5px;

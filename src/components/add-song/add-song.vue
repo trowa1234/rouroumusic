@@ -22,7 +22,7 @@
                     <!-- 播放历史列表使用scroll组件，当switches组件的索引值为0时才显示 -->
                     <scroll ref="songList" class="list-scroll" v-if="switchesCurrentIndex===0" :data="playHistory">
                         <div class="list-inner">
-                            <!-- 播放播放历史列表内容。监听点击事件，点击可以添加歌曲到歌曲列表 -->
+                            <!-- 播放历史列表内容。监听点击事件，点击可以添加歌曲到歌曲列表 -->
                             <song-list @select="selectSong" :songs="playHistory"></song-list>
                         </div>
                     </scroll>
@@ -73,7 +73,7 @@ export default {
             showFlag: false, //控制显示隐藏
             showSinger: false, //出入suggest组件的配置，搜索结果是否显示歌手
             switchesCurrentIndex:0, //switches组件配置，当前索引值
-            switches:[              //switches组件配置,按钮名字，个数
+            switches:[              //switches组件配置,按钮名字，数组的length就是按钮的个数
                 {name:"最近播放"},
                 {name:"搜索历史"}
             ]

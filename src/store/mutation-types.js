@@ -28,3 +28,6 @@ export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
 
 //获取播放历史列表方法名
 export const SET_PLAY_HISTORY = 'SET_PLAY_HISTORY'
+
+//获取收藏列表方法名
+export const SET_FAVORITE_LIST = 'SET_FAVORITE_LIST'

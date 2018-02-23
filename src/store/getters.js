@@ -25,8 +25,11 @@ export const disc = state => state.disc
 //把state.topList曝露出去。排行榜信息
 export const topList = state => state.topList
 
-//曝露搜索历史
+//曝露搜索历史数据
 export const searchHistory = state => state.searchHistory
 
-//曝露播放历史
+//曝露播放历史数据
 export const playHistory = state => state.playHistory
+
+//曝露收藏列表数据
+export const favoriteList = state => state.favoriteList

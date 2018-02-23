@@ -26,8 +26,9 @@
                             <!-- 正在播放歌曲绑定样式 -->
                             <i class="current" :class="getCurrentIcon(item)"></i>
                             <span class="text">{{item.name}}</span>
-                            <span class="like">
-                                <i class="iconfont icon-favorite"></i>
+                            <!-- 点击事件，收藏歌曲，方法定义在playerMixin中 -->
+                            <span class="like" @click.stop="toggleFavorite(item)">
+                                <i class="iconfont icon-favorite" :class="getFavoriteIcon(item)"></i>
                             </span>
                             <!-- 绑定事件：删除指定歌曲 -->
                             <span class="delete" @click.stop="deleteOne(item)">
@@ -258,9 +259,9 @@ export default {
                         font-size: 16px;
                         color: @theme-yellow;
                         margin-right: 15px;
-                    }
-                    .favorited{
+                        &.favorited{
                         color: @brand-danger;
+                        }
                     }
                 }
                 .delete{

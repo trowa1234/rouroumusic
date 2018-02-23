@@ -49,6 +49,11 @@ const mutations = {
     //接收参数（播放历史数据），提交给state.playHistory
     [types.SET_PLAY_HISTORY](state,playHistory){
         state.playHistory = playHistory
+    },
+
+    //接收参数（收藏列表），提交给state.favoriteList
+    [types.SET_FAVORITE_LIST](state,list){
+        state.favoriteList = list
     }
 }
 
