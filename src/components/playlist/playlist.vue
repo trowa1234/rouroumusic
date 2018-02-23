@@ -16,7 +16,8 @@
                     </h1>
                 </div>
                 <!-- 歌曲列表使用滚动组件 -->
-                <scroll :data="sequenceList" class="list-content" ref="listContent">
+                <!-- 延迟200毫秒计算高度是因为组件中使用了动画组，需要在动画执行完成后才计算高度 -->
+                <scroll :data="sequenceList" :refreshDelay="refreshDelay" class="list-content" ref="listContent">
                     <!-- 使用动画组，在删除歌曲是添加动画效果。tag=ul就是把transition-group标签渲染成ul -->
                     <transition-group name="list" tag="ul">
                         <!-- 渲染播放列表数据。绑定点击事件，点击列表中的歌曲可以播放 -->
@@ -66,7 +67,8 @@ export default {
     name: "playlist",
     data() {
         return {
-            showFlag: false
+            showFlag: false,
+            refreshDelay:200    //scroll组件重新计算高度延迟时间
         };
     },
     computed:{
@@ -232,7 +234,7 @@ export default {
                 padding: 0 30px 0 20px;
                 overflow: hidden;
                 &.list-enter-active, &.list-leave-active{
-                    transition: all 0.3s linear;
+                    transition: all 0.2s linear;
                 }
                 &.list-enter, &.list-leave-to{
                     transform: translate3d(-100%,0,0);

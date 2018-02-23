@@ -40,6 +40,11 @@ export default {
         beforeScroll:{
             type:Boolean,
             default:false
+        },
+        //获取数据后延时计算高度的时间不写死，而是用props的方式由父级来传入
+        refreshDelay:{
+            type:Number,
+            default:20
         }
     },
     //当dom加载完毕时初始化插件
@@ -116,12 +121,12 @@ export default {
         }
     },
     watch: {
-        //监听。
         //监听传递进来的data数据，发送变化就调用refresh()方法重新计算
+        //延迟时间可以传入，默认是20毫秒
         data() {
             setTimeout(() => {
                 this.refresh();
-            }, 20);
+            }, this.refreshDelay);
         }
     }
 };

@@ -5,7 +5,7 @@ import { playMode } from '@/common/js/config' //播放模式配置文件
 import { shuffle } from '@/common/js/util' //数组乱序方法
 
 //1、把字符存入本地缓存的方法。2、删除指定数据方法。3、删除所有数据方法
-import { saveSearch, deleteSearch, clearSearch } from "@/common/js/cache"
+import { saveSearch, deleteSearch, clearSearch, savePlay } from "@/common/js/cache"
 
 //使用ES6中的findIndex()方法，随机数组中去匹配当前播放歌曲的id，找到了就返回新数组中首歌曲的索引值
 function findIndex(list, song) {
@@ -128,16 +128,16 @@ export const deleteSong = function ({ commit, state }, song) {
     let currentIndex = state.currentIndex;
 
     //在当前播放列表中查找传入歌曲相同的歌曲，并返回该歌曲在歌曲列表中的索引值
-    let pIndex = findIndex(playlist,song);
+    let pIndex = findIndex(playlist, song);
     //根据这个索引值删除列表中的歌曲
-    playlist.splice(pIndex,1);
+    playlist.splice(pIndex, 1);
 
     //跟上面一样，只是在sequenceList这个列表中操作删除歌曲
-    let sIndex = findIndex(sequenceList,song);
-    sequenceList.splice(sIndex,1);
+    let sIndex = findIndex(sequenceList, song);
+    sequenceList.splice(sIndex, 1);
 
     //当删除的歌曲在当前播放歌曲前面时，或者当前播放歌曲是最后1首歌曲时
-    if(currentIndex > pIndex || currentIndex === playlist.length){
+    if (currentIndex > pIndex || currentIndex === playlist.length) {
         currentIndex--;//因为前面的删除了1项，所以当前播放歌曲的索引值需要-1.否则会切换歌曲
     }
 
@@ -147,18 +147,23 @@ export const deleteSong = function ({ commit, state }, song) {
     commit(types.SET_CURRENT_INDEX, currentIndex);
 
     //如果删掉的是歌曲列表的最后1首歌曲
-    if(!playlist.length){
+    if (!playlist.length) {
         commit(types.SET_PLAYING_STATE, false); //把播放状态切换为关闭
-    } else{
+    } else {
         commit(types.SET_PLAYING_STATE, true);//否则就是开启状态
     }
 }
 
 
 //清空歌曲列表。把所有状态设置为默认值
-export const deleteSongList = function({commit}){
+export const deleteSongList = function ({ commit }) {
     commit(types.SET_PLAYLIST, []); //设置为空数组
     commit(types.SET_SEQUENCE_LIST, []); //设置为空数组
     commit(types.SET_CURRENT_INDEX, -1); //当前歌曲索引 -1
     commit(types.SET_PLAYING_STATE, false) //关闭播放状态
+}
+
+//保存当前播放歌曲到state.playHistory。还保存到本地缓存中
+export const savePlayHistory = function ({ commit }, song) {
+    commit(types.SET_PLAY_HISTORY, savePlay(song))
 }

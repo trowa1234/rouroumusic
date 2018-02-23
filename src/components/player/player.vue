@@ -128,7 +128,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import { mapGetters, mapMutations } from "vuex"; //使用vuex的getters,mutations
+import { mapGetters, mapMutations, mapActions} from "vuex"; //使用vuex的getters,mutations,actions
 import animations from "create-keyframe-animation"; //在js中使用css3动画，这里就需要一个第三方的插件库create-keyframe-animation
 import { prefixStyle } from "@/common/js/dom"; //自动添加浏览器厂商CSS前缀方法
 import { formatTime } from "@/common/js/song";  //格式化时间的方法
@@ -287,6 +287,10 @@ export default {
         ready(){
             //加载完毕就把songReady改变为true
             this.songReady = true;
+
+            //当触发加载事件时调用vuex的actions中映射的方法
+            //保存当前的歌曲到播放历史列表中，同是把数据存入本地缓存
+            this.savePlayHistory(this.currentSong);
         },
         //error事件，用于当歌曲路径有问题没有到读取到歌曲数据的时候，这个事件就会发生
         error(){
@@ -502,7 +506,10 @@ export default {
         },
         ...mapMutations({
             setFullScreen: "SET_FULL_SCREEN" //设置fullScreen方法。把mutations中的SET_FULL_SCREEN方法映射给setFullScreen
-        })
+        }),
+        ...mapActions([
+            "savePlayHistory"
+        ])
     },
     watch: {
         //监听当前播放歌曲

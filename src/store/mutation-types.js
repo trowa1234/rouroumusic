@@ -23,5 +23,8 @@ export const SET_DISC = 'SET_DISC'
 //获取排行榜方法名
 export const SET_TOP_LIST = 'SET_TOP_LIST'
 
-//获取搜索字段列表
+//获取搜索记录列表方法名
 export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
+
+//获取播放历史列表方法名
+export const SET_PLAY_HISTORY = 'SET_PLAY_HISTORY'

@@ -7,7 +7,8 @@
         <!-- 当搜索栏无内容时显示热门搜索 -->
         <div class="shortcut-wrapper" ref="shortcutWrapper" v-show="!query">
             <!-- 使用scroll组件使热门搜索和搜索历史可以滚动 -->
-            <scroll class="shortcut" :data="shortcut" ref="shortcut">
+            <!-- refreshDelay延迟计算高度时间，定义在searchMixin中 -->
+            <scroll :refreshDelay="refreshDelay" class="shortcut" :data="shortcut" ref="shortcut">
                 <!-- 注意scroll组件里面只能有1个子元素来滚动，所以需要包裹1层div -->
                 <div>
                     <div class="hotkey">
@@ -51,29 +52,26 @@ import SearchBox from "@/base/search-box/search-box";
 import { getHotKey } from "@/api/search";
 import { ERR_OK } from "@/api/config";
 import Suggest from "@/components/suggest/suggest";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import SearchList from "@/base/search-list/search-list";
 import Confirm from "@/base/confirm/confirm";
 import Scroll from "@/base/scroll/scroll";
-import {playlistMixin} from "@/common/js/mixin"
+import {playlistMixin} from "@/common/js/mixin";
+import {searchMixin} from "@/common/js/mixin";  //搜索功能、保存搜索历史记录复用
 
 export default {
-    mixins:[playlistMixin],
+    mixins:[playlistMixin, searchMixin],
     name: "search",
     data() {
         return {
-            hotKey: [], //接收热搜词
-            query: "" //接收search-box传递处理的搜索字符
+            hotKey: [] //接收热搜词
         };
     },
     computed: {
         //计算搜索热点和搜索列表的的数据之和的高度，传递给scroll组件计算高度
         shortcut(){
             return this.hotKey.concat(this.searchHistory);
-        },
-        ...mapGetters([
-            "searchHistory" //从vuex中的getters中拿到searchHistory
-        ])
+        }
     },
     components: {
         SearchBox,
@@ -83,23 +81,6 @@ export default {
         Scroll
     },
     methods: {
-        //调用了vuex的actions中的方法，那当前搜索的字符提交给state，并且缓存在了本地localStorage中
-        saveSearch() {
-            this.saveSearchHistory(this.query);
-        },
-        //点击关键次，把关键词添加到搜索栏
-        addQuery(query) {
-            this.$refs.searchBox.setQuery(query);
-        },
-        //接收searchbox派发的query事件，并且把里面传递出来的新query值赋值给query
-        onQueryChange(query) {
-            this.query = query;
-        },
-        //监听滚动开始事件listScroll
-        blurInput() {
-            //调用searchBox中的blur()，使输入框失去焦点
-            this.$refs.searchBox.blur();
-        },
         //点击“×”按钮事件
         deleteOne(item){
             this.deleteSearchHistory(item); //vuex的方法
@@ -134,8 +115,6 @@ export default {
             });
         },
         ...mapActions([
-            "saveSearchHistory", //映射vuex的actions中的添加方法
-            "deleteSearchHistory", //删除方法
             "clearSearchHistory" //清空方法
         ])
     },

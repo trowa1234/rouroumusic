@@ -1,6 +1,6 @@
-//使用mixin可以使各个组件页面中共用这里面的代码
+//使用mixin可以使各个组件页面中共用这里面的代码。注意曝露出去的mixin是对象
 
-import {mapGetters,mapMutations} from 'vuex'; //引入vuex的getters、mutations
+import {mapGetters, mapMutations, mapActions} from 'vuex'; //引入vuex的getters、mutations、actions
 import {playMode} from '@/common/js/config'; //引入播放模式对象
 import {shuffle} from "@/common/js/util";    //引入数组乱序方法
 
@@ -85,5 +85,44 @@ export const playerMixin = {
             setPlayMode:"SET_PLAY_MODE", //映射设置mode方法
             setPlaylist:"SET_PLAYLIST" //映射设置播放列表playlist方法
         })
+    }
+}
+
+
+//搜索功能、保存搜索历史记录复用。这个功能search组件和add-song组件都会用到
+export const searchMixin = {
+    data() {
+        return {
+            query:'',    //接收search-box传递处理的搜索字符
+            refreshDelay:200    //scroll组件重新计算高度延迟时间
+        }
+    },
+    computed: {
+        ...mapGetters([
+            "searchHistory" //从vuex中的getters中拿到searchHistory
+        ])
+    },
+    methods:{
+        //点击关键词，把关键词添加到搜索栏
+        addQuery(query) {
+            this.$refs.searchBox.setQuery(query);
+        },
+        //接收searchbox派发的query事件，并且把里面传递出来的新query值赋值给query
+        onQueryChange(query) {
+            this.query = query;
+        },
+        //监听滚动开始事件listScroll
+        blurInput() {
+            //调用searchBox中的blur()，使输入框失去焦点
+            this.$refs.searchBox.blur();
+        },
+        //调用了vuex的actions中的方法，那当前搜索的字符提交给state，并且缓存在了本地localStorage中
+        saveSearch() {
+            this.saveSearchHistory(this.query);
+        },
+        ...mapActions([
+            "saveSearchHistory", //映射vuex的actions中的添加方法
+            "deleteSearchHistory" //删除方法
+        ])
     }
 }
