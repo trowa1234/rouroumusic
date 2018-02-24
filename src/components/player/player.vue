@@ -119,7 +119,7 @@
         <!-- 歌曲播放时，audio标签会派发一个事件timeupdate -->
         <!-- 歌曲播放结束时，会派发一个事件ended -->
         <audio class="audio" ref="audio" :src="currentSong.url" 
-               @canplay="ready" 
+               @play="ready" 
                @error="error" 
                @timeupdate="updateTime" 
                @ended="end">
@@ -233,9 +233,10 @@ export default {
                 return
             }
 
-            //边界判断：当歌曲列表只有1首歌的情况，直接调用循环播放
+            //边界判断：当歌曲列表只有1首歌的情况，直接调用循环播放，
             if(this.playlist.length === 1){
-                this.loop();
+                this.loop();    
+                return  //然后return,就不执行下面的this.songReady = false了
             } else{
                 //获取上一首个的索引值:当前索引-1
                 let index = this.currentIndex - 1;
@@ -266,6 +267,7 @@ export default {
             //边界判断：当歌曲列表只有1首歌的情况，直接调用循环播放
             if(this.playlist.length === 1){
                 this.loop();
+                return
             } else{
                  //获取下一首个的索引值:当前索引+1
                 let index = this.currentIndex + 1;
@@ -323,6 +325,10 @@ export default {
         getLyric(){
             //此方法return出来的是promise对象所以使用.then
             this.currentSong.getLyric().then((lyric) => {
+                //解决点击过快，歌词显示不正常的问题。判断当前歌曲的歌词是否是请求得到歌词，如果不是直接retrun
+                if(this.currentSong.lyric !== lyric){
+                    return
+                }
                 //使用插件对歌词进行处理并赋值给currentLyric。第1个参数是获取到的歌词，第2个参数当歌词行数发生改变时的执行的回调函数
                 this.currentLyric = new Lyric(lyric, this.handleLyric);
                 //console.log(this.currentLyric) //处理后的歌词对象
@@ -541,7 +547,8 @@ export default {
             */
 
             //为了解决播放器从后台返回前台是可以正常的播放，所以改用延迟1秒执行
-            setTimeout(() => {
+            clearTimeout(this.timer);//每次执行前需要清空延迟队列
+            this.timer = setTimeout(() => {
                 this.$refs.audio.play();  //播放歌曲
                 this.getLyric();    //获取歌词
             },1000)
