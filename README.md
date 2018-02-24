@@ -1,21 +1,27 @@
-# newmusic
+# vue2音乐播放器练习demo
 
-> music player
+> 数据来源：QQ音乐。使用技术vue2.0全家桶（vue + vue-router + vuex + axios + less）
+
+# 截图
+![image](https://github.com/trowa1234/rouroumusic/tree/master/Screenshots/01.jgp)
+![image](https://github.com/trowa1234/rouroumusic/tree/master/Screenshots/02.jgp)
+![image](https://github.com/trowa1234/rouroumusic/tree/master/Screenshots/03.jgp)
+![image](https://github.com/trowa1234/rouroumusic/tree/master/Screenshots/04.jgp)
 
 ## Build Setup
 
 ``` bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 开发环境运行
 npm run dev
 
-# build for production with minification
+# 打包
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
+# 浏览打包好的项目
+node prod.server.js
+
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
