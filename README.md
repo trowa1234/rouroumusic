@@ -14,13 +14,13 @@
 # 安装依赖
 npm install
 
-# 浏览打包好的项目
-node prod.server.js
-
 # 开发环境运行
 npm run dev
 
 # 打包
 npm run build
+
+# 浏览打包好的项目
+node prod.server.js
 ```
 
